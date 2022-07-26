@@ -10,14 +10,16 @@
 # specific language governing permissions and limitations under the License.
 
 from copy import copy
+from functools import partial
 from typing import Dict, Any
 
 from src.taipy.config import Section, Config
+from src.taipy.config.unique_section import UniqueSection
 
 
-class SectionForTest(Section):
+class UniqueSectionForTest(UniqueSection):
 
-    name = "sub"
+    name = "section_name"
     _MY_ATTRIBUTE_KEY = "attribute"
 
     def __init__(self, attribute: str = None, **properties):
@@ -25,7 +27,7 @@ class SectionForTest(Section):
         super().__init__(**properties)
 
     def __copy__(self):
-        return SectionForTest(self._attribute, **copy(self._properties))
+        return UniqueSectionForTest(self._attribute, **copy(self._properties))
 
     @property
     def attribute(self):
@@ -36,7 +38,7 @@ class SectionForTest(Section):
         self._attribute = val
 
     def _to_dict(self):
-        as_dict = {}
+        as_dict = {self._ID_KEY: self.id}
         if self._attribute is not None:
             as_dict[self._MY_ATTRIBUTE_KEY] = self._attribute
         as_dict.update(self._properties)
@@ -44,22 +46,16 @@ class SectionForTest(Section):
 
     @classmethod
     def _from_dict(cls, as_dict: Dict[str, Any]):
-        config = SectionForTest()
-        config._attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
-        config._properties = as_dict
-        return config
+        as_dict.pop(cls._ID_KEY, None)
+        attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
+        return UniqueSectionForTest(attribute=attribute, **as_dict)
 
-    def _update(self, as_dict: Dict[str, Any]):
+    def _update(self, as_dict: Dict[str, Any], default_dn_cfg=None):
         self._attribute = as_dict.pop(self._MY_ATTRIBUTE_KEY, self._attribute)
         self._properties.update(as_dict)
 
     @staticmethod
     def _configure(attribute: str, **properties):
-        section = SectionForTest(attribute, **properties)
+        section = UniqueSectionForTest(attribute, **properties)
         Config._register(section)
-        return Config.sections[SectionForTest.name]
-
-
-Config._register_default(SectionForTest("default_attribute"))
-Config.configure_section_for_test = SectionForTest._configure
-
+        return Config.unique_sections[UniqueSectionForTest.name]

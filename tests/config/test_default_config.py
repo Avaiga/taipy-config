@@ -70,8 +70,8 @@ def _test_default_scenario_config(scenario_config: ScenarioConfig):
 
 def test_default_configuration():
     default_config = _Config._default_config()
-    assert default_config._sections is not None
-    assert len(default_config._sections) == 0
+    assert default_config._unique_sections is not None
+    assert len(default_config._unique_sections) == 0
 
     _test_default_global_app_config(default_config._global_config)
     _test_default_global_app_config(Config.global_config)

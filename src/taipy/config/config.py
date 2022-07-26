@@ -13,6 +13,7 @@ import json
 import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from .unique_section import UniqueSection
 from .section import Section
 from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
@@ -44,15 +45,16 @@ class Config:
     _collector = IssueCollector()
 
     @_Classproperty
-    def sections(cls) -> Section:
-        """Return all sub configurations."""
+    def unique_sections(cls) -> Dict[str, UniqueSection]:
+        """Return all unique sections."""
+        return cls._applied_config._unique_sections
+
+    @_Classproperty
+    def sections(cls) -> Dict[str, Dict[str, Section]]:
+        """Return all non unique sections."""
         return cls._applied_config._sections
 
-    @classmethod
-    def __getattr__(cls, item: str) -> Optional[Any]:
-        """Return a sub configuration value."""
-        return cls._applied_config._sections[item]
-
+    # TO REFACTOR
     @_Classproperty
     def job_config(cls) -> JobConfig:
         """Return configuration values related to the job executions as a `JobConfig^`."""
@@ -82,6 +84,7 @@ class Config:
     def scenarios(cls) -> Dict[str, ScenarioConfig]:
         """Return scenario configs by config id."""
         return cls._applied_config._scenarios
+    # END REFACTOR
 
     @classmethod
     def load(cls, filename):
@@ -116,6 +119,7 @@ class Config:
     def _export_code_config(cls, filename):
         _TomlSerializer()._write(cls._python_config, filename)
 
+    # TO REFACTOR
     @classmethod
     def configure_global_app(
         cls,
@@ -692,6 +696,7 @@ class Config:
             db_port=db_port,
             **properties,
         )
+    # END REFACTOR
 
     @classmethod
     def check(cls) -> IssueCollector:
@@ -707,19 +712,37 @@ class Config:
         return cls._collector
 
     @classmethod
-    def _register_default(cls, default_section):
-        if cls._default_config._sections.get(default_section.name, None):
-            cls._default_config._sections[default_section.name]._update(default_section._to_dict())
+    def _register_default(cls, default_section: Section):
+        if isinstance(default_section, UniqueSection):
+            if cls._default_config._unique_sections.get(default_section.name, None):
+                cls._default_config._unique_sections[default_section.name]._update(default_section._to_dict())
+            else:
+                cls._default_config._unique_sections[default_section.name] = default_section
         else:
-            cls._default_config._sections[default_section.name] = default_section
+            if def_sections := cls._default_config._sections.get(default_section.name, None):
+                if def_sections.get(default_section.id, None):
+                    def_sections[default_section.id]._update(default_section._to_dict())
+                else:
+                    def_sections[default_section.id] = default_section
+            else:
+                cls._default_config._sections[default_section.name] = {default_section.id: default_section}
         cls.__compile_configs()
 
     @classmethod
     def _register(cls, section):
-        if cls._python_config._sections.get(section.name, None):
-            cls._python_config._sections[section.name]._update(section._to_dict())
+        if isinstance(section, UniqueSection):
+            if cls._python_config._unique_sections.get(section.name, None):
+                cls._python_config._unique_sections[section.name]._update(section._to_dict())
+            else:
+                cls._python_config._unique_sections[section.name] = section
         else:
-            cls._python_config._sections[section.name] = section
+            if sections := cls._python_config._sections.get(section.name, None):
+                if sections.get(section.id, None):
+                    sections[section.id]._update(section._to_dict())
+                else:
+                    sections[section.id] = section
+            else:
+                cls._python_config._sections[section.name] = {section.id: section}
         cls.__compile_configs()
 
     @classmethod
