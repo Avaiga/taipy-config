@@ -13,8 +13,8 @@ import pytest
 
 from src.taipy.config import Config, Section
 from src.taipy.config._config import _Config
-from tests.config.section_for_test import SectionForTest
-from tests.config.unique_section_for_test import UniqueSectionForTest
+from tests.config.utils.section_for_tests import SectionForTest
+from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -25,6 +25,6 @@ def reset_configuration_singleton():
     Config._env_file_config = None
     Config._applied_config = _Config._default_config()
     Config._register_default(UniqueSectionForTest("default_attribute"))
-    Config.configure_unique_section_for_test = UniqueSectionForTest._configure
+    Config.configure_unique_section_for_tests = UniqueSectionForTest._configure
     Config._register_default(SectionForTest(Section._DEFAULT_KEY, "default_attribute"))
-    Config.configure_section_for_test = SectionForTest._configure
+    Config.configure_section_for_tests = SectionForTest._configure

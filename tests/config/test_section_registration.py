@@ -11,45 +11,45 @@
 import pytest
 
 from src.taipy.config import Config
-from tests.config.section_for_test import SectionForTest
-from tests.config.unique_section_for_test import UniqueSectionForTest
+from tests.config.utils.section_for_tests import SectionForTest
+from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
 
 def test_unique_section_registration_and_usage():
     assert Config.unique_sections is not None
     assert Config.unique_sections[UniqueSectionForTest.name] is not None
-    # assert Config.section_name is not None
+    # assert Config.unique_section_name is not None
     assert Config.unique_sections[UniqueSectionForTest.name].attribute == "default_attribute"
-    # assert Config.section_name.attribute == "default_attribute"
+    # assert Config.unique_section_name.attribute == "default_attribute"
     assert Config.unique_sections[UniqueSectionForTest.name].prop is None
-    # assert Config.section_name.prop is None
+    # assert Config.unique_section_name.prop is None
 
-    mySection = Config.configure_unique_section_for_test(attribute="my_attribute", prop="my_prop")
+    mySection = Config.configure_unique_section_for_tests(attribute="my_attribute", prop="my_prop")
 
     assert Config.unique_sections is not None
     assert Config.unique_sections[UniqueSectionForTest.name] is not None
-    # assert Config.section_name is not None
+    # assert Config.unique_section_name is not None
     assert mySection is not None
     assert Config.unique_sections[UniqueSectionForTest.name].attribute == "my_attribute"
-    # assert Config.section_name.attribute == "my_attribute"
+    # assert Config.unique_section_name.attribute == "my_attribute"
     assert mySection.attribute == "my_attribute"
     assert Config.unique_sections[UniqueSectionForTest.name].prop == "my_prop"
-    # assert Config.section_name.prop == "my_prop"
+    # assert Config.unique_section_name.prop == "my_prop"
     assert mySection.prop == "my_prop"
 
-    myNewSection = Config.configure_unique_section_for_test(attribute="my_new_attribute", prop="my_new_prop")
+    myNewSection = Config.configure_unique_section_for_tests(attribute="my_new_attribute", prop="my_new_prop")
 
     assert Config.unique_sections is not None
     assert Config.unique_sections[UniqueSectionForTest.name] is not None
-    # assert Config.section_name is not None
+    # assert Config.unique_section_name is not None
     assert myNewSection is not None
     assert mySection is not None
     assert Config.unique_sections[UniqueSectionForTest.name].attribute == "my_new_attribute"
-    # assert Config.section_name.attribute == "my_new_attribute"
+    # assert Config.unique_section_name.attribute == "my_new_attribute"
     assert myNewSection.attribute == "my_new_attribute"
     assert mySection.attribute == "my_new_attribute"
     assert Config.unique_sections[UniqueSectionForTest.name].prop == "my_new_prop"
-    # assert Config.section_name.prop == "my_new_prop"
+    # assert Config.unique_section_name.prop == "my_new_prop"
     assert myNewSection.prop == "my_new_prop"
     assert mySection.prop == "my_new_prop"
 
@@ -63,7 +63,7 @@ def test_section_registration_and_usage():
     assert Config.sections[SectionForTest.name]["default"].attribute == "default_attribute"
     assert Config.sections[SectionForTest.name]["default"].prop is None
 
-    myFirstSection = Config.configure_section_for_test(id="first", attribute="my_attribute", prop="my_prop")
+    myFirstSection = Config.configure_section_for_tests(id="first", attribute="my_attribute", prop="my_prop")
     assert Config.sections is not None
     assert len(Config.sections) == 1
     assert Config.sections[SectionForTest.name] is not None
@@ -77,7 +77,7 @@ def test_section_registration_and_usage():
     assert myFirstSection.attribute == "my_attribute"
     assert myFirstSection.prop == "my_prop"
 
-    myNewSection = Config.configure_section_for_test(id="second", attribute="my_new_attribute", prop="my_new_prop")
+    myNewSection = Config.configure_section_for_tests(id="second", attribute="my_new_attribute", prop="my_new_prop")
     assert Config.sections is not None
     assert len(Config.sections) == 1
     assert Config.sections[SectionForTest.name] is not None
@@ -96,7 +96,7 @@ def test_section_registration_and_usage():
     assert myNewSection.attribute == "my_new_attribute"
     assert myNewSection.prop == "my_new_prop"
 
-    my2ndSection = Config.configure_section_for_test(id="second", attribute="my_2nd_attribute", prop="my_2nd_prop")
+    my2ndSection = Config.configure_section_for_tests(id="second", attribute="my_2nd_attribute", prop="my_2nd_prop")
     assert Config.sections is not None
     assert len(Config.sections) == 1
     assert Config.sections[SectionForTest.name] is not None
