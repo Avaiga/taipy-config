@@ -117,6 +117,3 @@ def test_section_registration_and_usage():
     assert my2ndSection.attribute == "my_2nd_attribute"
     assert my2ndSection.prop == "my_2nd_prop"
 
-
-def test_serialization_deserialzation():
-    pass
