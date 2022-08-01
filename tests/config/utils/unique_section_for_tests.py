@@ -37,7 +37,7 @@ class UniqueSectionForTest(UniqueSection):
         self._attribute = val
 
     def _to_dict(self):
-        as_dict = {}
+        as_dict = {self._ID_KEY: self.id}
         if self._attribute is not None:
             as_dict[self._MY_ATTRIBUTE_KEY] = self._attribute
         as_dict.update(self._properties)
@@ -45,10 +45,9 @@ class UniqueSectionForTest(UniqueSection):
 
     @classmethod
     def _from_dict(cls, as_dict: Dict[str, Any]):
-        config = UniqueSectionForTest()
-        config._attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
-        config._properties = as_dict
-        return config
+        as_dict.pop(cls._ID_KEY, None)
+        attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
+        return UniqueSectionForTest(attribute=attribute, **as_dict)
 
     def _update(self, as_dict: Dict[str, Any], default_section=None):
         self._attribute = as_dict.pop(self._MY_ATTRIBUTE_KEY, self._attribute)
