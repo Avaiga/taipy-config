@@ -13,7 +13,7 @@ from collections import defaultdict
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from .frequency import Frequency
+from ..common.frequency import Frequency
 from ..common._template_handler import _TemplateHandler as _tpl
 from ..common._validate_id import _validate_id
 from ..pipeline.pipeline_config import PipelineConfig

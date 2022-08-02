@@ -16,8 +16,8 @@ import pytest
 
 from src.taipy.config._config import _Config
 from src.taipy.config.config import Config
-from src.taipy.config.data_node.scope import Scope
-from src.taipy.config.scenario.frequency import Frequency
+from src.taipy.config.common.scope import Scope
+from src.taipy.config.common.frequency import Frequency
 
 
 @pytest.fixture(scope="function", autouse=True)

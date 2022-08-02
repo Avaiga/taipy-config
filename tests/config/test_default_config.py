@@ -9,15 +9,8 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-from src.taipy.config.data_node.scope import Scope
-from src.taipy.config._config import _Config
 from src.taipy.config.config import Config
-from src.taipy.config.data_node.data_node_config import DataNodeConfig
 from src.taipy.config.global_app.global_app_config import GlobalAppConfig
-from src.taipy.config.job_execution.job_config import JobConfig
-from src.taipy.config.pipeline.pipeline_config import PipelineConfig
-from src.taipy.config.scenario.scenario_config import ScenarioConfig
-from src.taipy.config.task.task_config import TaskConfig
 from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
 

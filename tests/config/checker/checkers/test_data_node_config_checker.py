@@ -14,7 +14,7 @@ from copy import copy
 from src.taipy.config._config import _Config
 from src.taipy.config.checker._checkers._data_node_config_checker import _DataNodeConfigChecker
 from src.taipy.config.checker.issue_collector import IssueCollector
-from src.taipy.config.data_node.scope import Scope
+from src.taipy.config.common.scope import Scope
 
 
 class TestDataNodeConfigChecker:

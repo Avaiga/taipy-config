@@ -11,7 +11,7 @@
 
 import pytest
 
-from src.taipy.config.data_node.scope import Scope
+from src.taipy.config.common.scope import Scope
 from src.taipy.config.config import Config
 
 

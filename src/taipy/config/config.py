@@ -22,12 +22,12 @@ from .checker._checker import _Checker
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
 from .data_node.data_node_config import DataNodeConfig
-from .data_node.scope import Scope
+from .common.scope import Scope
 from .exceptions.exceptions import ConfigurationIssueError
 from .global_app.global_app_config import GlobalAppConfig
 from .job_execution.job_config import JobConfig
 from .pipeline.pipeline_config import PipelineConfig
-from .scenario.frequency import Frequency
+from .common.frequency import Frequency
 from .scenario.scenario_config import ScenarioConfig
 from .task.task_config import TaskConfig
 

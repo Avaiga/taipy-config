@@ -11,7 +11,7 @@
 
 from copy import copy
 
-from src.taipy.config.scenario.frequency import Frequency
+from src.taipy.config.common.frequency import Frequency
 from src.taipy.config._config import _Config
 from src.taipy.config.checker._checkers._scenario_config_checker import _ScenarioConfigChecker
 from src.taipy.config.checker.issue_collector import IssueCollector

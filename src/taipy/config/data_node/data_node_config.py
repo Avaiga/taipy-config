@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from ..common._template_handler import _TemplateHandler as _tpl
 from ..common._validate_id import _validate_id
-from .scope import Scope
+from ..common.scope import Scope
 
 
 class DataNodeConfig:

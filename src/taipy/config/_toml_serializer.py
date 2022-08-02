@@ -16,8 +16,8 @@ import toml  # type: ignore
 
 from . import Section
 from .common._validate_id import _validate_id
-from .scenario.frequency import Frequency
-from .data_node.scope import Scope
+from .common.frequency import Frequency
+from .common.scope import Scope
 from ._config import _Config
 from .common._template_handler import _TemplateHandler
 from .data_node.data_node_config import DataNodeConfig

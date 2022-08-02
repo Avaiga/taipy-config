@@ -13,7 +13,7 @@ from typing import List
 
 from ..._config import _Config
 from ...data_node.data_node_config import DataNodeConfig
-from ...data_node.scope import Scope
+from ...common.scope import Scope
 from ..issue_collector import IssueCollector
 from ._config_checker import _ConfigChecker
 

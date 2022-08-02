@@ -13,8 +13,8 @@ import os
 import re
 from collections import UserDict
 
-from ..scenario.frequency import Frequency
-from ..data_node.scope import Scope
+from .frequency import Frequency
+from .scope import Scope
 from ..exceptions.exceptions import InconsistentEnvVariableError, MissingEnvVariableError
 
 

@@ -3,11 +3,7 @@ from unittest import mock
 
 import pytest
 
-from src.taipy.config import Config
-from src.taipy.config.data_node.scope import Scope
 from src.taipy.config.exceptions.exceptions import InvalidConfigurationId
-from src.taipy.config.scenario.frequency import Frequency
-from tests.config.utils.named_temporary_file import NamedTemporaryFile
 from tests.config.utils.section_for_tests import SectionForTest
 from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
