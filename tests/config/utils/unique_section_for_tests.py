@@ -37,14 +37,14 @@ class UniqueSectionForTest(UniqueSection):
         self._attribute = val
 
     def _to_dict(self):
-        as_dict = {self._ID_KEY: self.id}
+        as_dict = {}
         if self._attribute is not None:
             as_dict[self._MY_ATTRIBUTE_KEY] = self._attribute
         as_dict.update(self._properties)
         return as_dict
 
     @classmethod
-    def _from_dict(cls, as_dict: Dict[str, Any]):
+    def _from_dict(cls, as_dict: Dict[str, Any], id=None):
         as_dict.pop(cls._ID_KEY, None)
         attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
         return UniqueSectionForTest(attribute=attribute, **as_dict)

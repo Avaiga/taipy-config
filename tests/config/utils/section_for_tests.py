@@ -20,7 +20,7 @@ class SectionForTest(Section):
     name = "section_name"
     _MY_ATTRIBUTE_KEY = "attribute"
 
-    def __init__(self, id:str, attribute: str = None, **properties):
+    def __init__(self, id: str, attribute: str = None, **properties):
         self._attribute = attribute
         super().__init__(id, **properties)
 
@@ -43,8 +43,8 @@ class SectionForTest(Section):
         return as_dict
 
     @classmethod
-    def _from_dict(cls, as_dict: Dict[str, Any]):
-        id = as_dict.pop(cls._ID_KEY, None)
+    def _from_dict(cls, as_dict: Dict[str, Any], id: str):
+        as_dict.pop(cls._ID_KEY, None)
         attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
         return SectionForTest(id=id, attribute=attribute, **as_dict)
 

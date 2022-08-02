@@ -43,6 +43,7 @@ class Config:
     _env_file_config = None
     _applied_config = _Config._default_config()
     _collector = IssueCollector()
+    _serializer = _TomlSerializer()
 
     @_Classproperty
     def unique_sections(cls) -> Dict[str, UniqueSection]:
@@ -94,7 +95,7 @@ class Config:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
         cls.__logger.info(f"Loading configuration. Filename: '{filename}'")
-        cls._file_config = _TomlSerializer()._read(filename)
+        cls._file_config = cls._serializer._read(filename)
         cls.__compile_configs()
         cls.__logger.info(f"Configuration '{filename}' successfully loaded.")
 
@@ -113,11 +114,11 @@ class Config:
         Note:
             If _filename_ already exists, it is overwritten.
         """
-        _TomlSerializer()._write(cls._applied_config, filename)
+        cls._serializer._write(cls._applied_config, filename)
 
     @classmethod
     def _export_code_config(cls, filename):
-        _TomlSerializer()._write(cls._python_config, filename)
+        cls._serializer._write(cls._python_config, filename)
 
     # TO REFACTOR
     @classmethod
@@ -140,9 +141,11 @@ class Config:
         Returns:
             GlobalAppConfig^: The global application configuration.
         """
-        cls._python_config._global_config = GlobalAppConfig(
-            root_folder, storage_folder, clean_entities_enabled, **properties
-        )
+        glob_cfg = GlobalAppConfig(root_folder, storage_folder, clean_entities_enabled, **properties)
+        if cls._python_config._global_config is None:
+            cls._python_config._global_config = glob_cfg
+        else:
+            cls._python_config._global_config._update(glob_cfg._to_dict())
         cls.__compile_configs()
         return cls._applied_config._global_config
 
@@ -726,6 +729,7 @@ class Config:
                     def_sections[default_section.id] = default_section
             else:
                 cls._default_config._sections[default_section.name] = {default_section.id: default_section}
+        cls._serializer._section_class[default_section.name] = default_section.__class__
         cls.__compile_configs()
 
     @classmethod
@@ -743,13 +747,14 @@ class Config:
                     sections[section.id] = section
             else:
                 cls._python_config._sections[section.name] = {section.id: section}
+        cls._serializer._section_class[section.name] = section.__class__
         cls.__compile_configs()
 
     @classmethod
     def _load_environment_file_config(cls):
         if config_filename := os.environ.get(cls._ENVIRONMENT_VARIABLE_NAME_WITH_CONFIG_PATH):
             cls.__logger.info(f"Loading configuration provided by environment variable. Filename: '{config_filename}'")
-            cls._env_file_config = _TomlSerializer()._read(config_filename)
+            cls._env_file_config = cls._serializer._read(config_filename)
             cls.__logger.info(f"Configuration '{config_filename}' successfully loaded.")
 
     @classmethod

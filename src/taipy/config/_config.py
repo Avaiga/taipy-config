@@ -28,13 +28,14 @@ class _Config:
     def __init__(self):
         self._sections: Dict[str, Dict[Section]] = {}
         self._unique_sections: Dict[str, UniqueSection] = {}
-        # TO REFACTOR
         self._global_config: GlobalAppConfig = GlobalAppConfig()
+        # TO REFACTOR
         self._job_config: JobConfig = JobConfig()
         self._data_nodes: Dict[str, DataNodeConfig] = {}
         self._tasks: Dict[str, TaskConfig] = {}
         self._pipelines: Dict[str, PipelineConfig] = {}
         self._scenarios: Dict[str, ScenarioConfig] = {}
+        # END REFACTOR
 
     @classmethod
     def _default_config(cls):

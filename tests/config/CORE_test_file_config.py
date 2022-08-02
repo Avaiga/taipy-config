@@ -12,44 +12,13 @@
 import os
 from unittest import mock
 
-import pytest
-
-from src.taipy.config.scenario.frequency import Frequency
-from src.taipy.config.data_node.scope import Scope
 from src.taipy.config.config import Config
-from src.taipy.config.exceptions.exceptions import InvalidConfigurationId, LoadingError
-from tests.config.named_temporary_file import NamedTemporaryFile
+from src.taipy.config.data_node.scope import Scope
+from src.taipy.config.scenario.frequency import Frequency
+from tests.config.utils.named_temporary_file import NamedTemporaryFile
 
 
-def test_read_error_node_can_not_appear_twice():
-    config = NamedTemporaryFile(
-        """
-[JOB]
-nb_of_workers = 40
-
-[JOB]
-parallel_execution = true
-nb_of_workers = 10
-    """
-    )
-
-    with pytest.raises(LoadingError, match="Can not load configuration"):
-        Config.load(config.filename)
-
-
-def test_read_skip_configuration_outside_nodes():
-    config = NamedTemporaryFile(
-        """
-mode = "standalone"
-    """
-    )
-
-    Config.load(config.filename)
-
-    assert Config.job_config.mode == "development"
-
-
-def test_write_configuration_file():
+def test_write_configuration_file_CORE():
     expected_config = """
 [TAIPY]
 root_folder = "./taipy/"
@@ -62,20 +31,20 @@ nb_of_workers = "1:int"
 
 [DATA_NODE.default]
 storage_type = "in_memory"
-scope = "SCENARIO"
+scope = "SCENARIO:SCOPE"
 cacheable = "False:bool"
 custom = "default_custom_prop"
 
 [DATA_NODE.dn1]
 storage_type = "pickle"
-scope = "PIPELINE"
+scope = "PIPELINE:SCOPE"
 cacheable = "False:bool"
 custom = "custom property"
 default_data = "dn1"
 
 [DATA_NODE.dn2]
 storage_type = "ENV[FOO]"
-scope = "SCENARIO"
+scope = "SCENARIO:SCOPE"
 cacheable = "False:bool"
 custom = "default_custom_prop"
 foo = "bar"
@@ -103,12 +72,12 @@ cron = "daily"
 
 [SCENARIO.default]
 pipelines = []
-frequency = "QUARTERLY"
+frequency = "QUARTERLY:FREQUENCY"
 owner = "Michel Platini"
 
 [SCENARIO.s1]
 pipelines = [ "p1",]
-frequency = "QUARTERLY"
+frequency = "QUARTERLY:FREQUENCY"
 owner = "Raymond Kopa"
     """.strip()
     tf = NamedTemporaryFile()
@@ -145,7 +114,7 @@ owner = "Raymond Kopa"
         assert actual_config_2 == expected_config
 
 
-def test_all_entities_use_valid_id():
+def test_read_configuration_file_CORE():
     file_config = NamedTemporaryFile(
         """
         [DATA_NODE.default]
@@ -196,34 +165,3 @@ def test_all_entities_use_valid_id():
     assert len(Config.scenarios) == 2
     assert Config.scenarios["my_scenario"].id == "my_scenario"
     assert Config.scenarios["my_scenario"].owner == "John Doe"
-
-
-def test_all_entities_use_invalid_id():
-    file_config = NamedTemporaryFile(
-        """
-        [DATA_NODE.default]
-        has_header = true
-
-        [DATA_NODE.1y_datanode]
-        path = "/data/csv"
-
-        [DATA_NODE.1y_datanode2]
-        path = "/data2/csv"
-
-        [TASK.my_task]
-        inputs = ["1y_datanode"]
-        function = "<built-in function print>"
-        outputs = ["1y_datanode2"]
-        description = "task description"
-
-        [PIPELINE.1y_pipeline]
-        tasks = [ "1y_Task",]
-        cron = "daily"
-
-        [SCENARIO.1y_scenario]
-        pipelines = [ "1y_pipeline",]
-        owner = "John Doe"
-        """
-    )
-    with pytest.raises(InvalidConfigurationId):
-        Config.load(file_config.filename)

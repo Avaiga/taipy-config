@@ -16,7 +16,7 @@ import pytest
 
 from src.taipy.config.config import Config
 from src.taipy.config.exceptions.exceptions import InconsistentEnvVariableError, MissingEnvVariableError
-from tests.config.named_temporary_file import NamedTemporaryFile
+from tests.config.utils.named_temporary_file import NamedTemporaryFile
 
 
 def test_override_default_configuration_with_code_configuration():
@@ -238,7 +238,7 @@ clean_entities_enabled = false
     assert Config.data_nodes["my_datanode"].not_defined is None
 
 
-def test_override_default_configuration_with_multiple_configurations_including_environment_varaible_values():
+def test_override_default_configuration_with_multiple_configurations_including_environment_variable_values():
     file_config = NamedTemporaryFile(
         """
 [DATA_NODE.default]
