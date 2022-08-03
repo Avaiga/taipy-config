@@ -8,10 +8,8 @@
 # Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
-import pytest
 
 from src.taipy.config import Config
-from src.taipy.config.exceptions.exceptions import InvalidConfigurationId
 from tests.config.utils.section_for_tests import SectionForTest
 from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
@@ -44,6 +42,14 @@ def test_unique_section_registration_and_usage():
     assert Config.unique_sections[UniqueSectionForTest.name].prop == "my_new_prop"
     assert myNewSection.prop == "my_new_prop"
     assert mySection.prop == "my_new_prop"
+
+
+def test_sections_exposed_as_attribute():
+    assert Config.unique_section_name().attribute == "default_attribute"
+
+    assert Config.section_name()["default"].attribute == "default_attribute"
+    Config.configure_section_for_tests(id="my_id", attribute="my_attribute")
+    assert Config.section_name()["my_id"].attribute == "my_attribute"
 
 
 def test_section_registration_and_usage():
