@@ -11,7 +11,7 @@
 
 from src.taipy.config.config import Config
 from src.taipy.config.data_node.data_node_config import DataNodeConfig
-from src.taipy.config.data_node.scope import Scope
+from src.taipy.config.common.scope import Scope
 from src.taipy.config.global_app.global_app_config import GlobalAppConfig
 from src.taipy.config.job_execution.job_config import JobConfig
 from src.taipy.config.pipeline.pipeline_config import PipelineConfig

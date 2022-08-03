@@ -13,8 +13,8 @@ import os
 from unittest import mock
 
 from src.taipy.config.config import Config
-from src.taipy.config.data_node.scope import Scope
-from src.taipy.config.scenario.frequency import Frequency
+from src.taipy.config.common.scope import Scope
+from src.taipy.config.common.frequency import Frequency
 from tests.config.utils.named_temporary_file import NamedTemporaryFile
 
 
@@ -27,7 +27,10 @@ clean_entities_enabled = "True:bool"
 
 [JOB]
 mode = "standalone"
-nb_of_workers = "1:int"
+nb_of_workers = "2:int"
+
+[unique_section_name]
+attribute = "default_attribute"
 
 [DATA_NODE.default]
 storage_type = "in_memory"
@@ -79,13 +82,18 @@ owner = "Michel Platini"
 pipelines = [ "p1",]
 frequency = "QUARTERLY:FREQUENCY"
 owner = "Raymond Kopa"
+
+[section_name.default]
+attribute = "default_attribute"
+prop = "default_prop"
+prop_int = "0:int"
     """.strip()
     tf = NamedTemporaryFile()
     with mock.patch.dict(
         os.environ, {"FOO": "in_memory", "QUX": "qux", "QUUZ": "true", "GARPLY": "garply", "WALDO": "17"}
     ):
         Config.configure_global_app(clean_entities_enabled=True)
-        Config.configure_job_executions(mode="standalone", nb_of_workers=1)
+        Config.configure_job_executions(mode="standalone", nb_of_workers=2)
         Config.configure_default_data_node(storage_type="in_memory", custom="default_custom_prop")
         dn1_cfg_v2 = Config.configure_data_node(
             "dn1", storage_type="pickle", scope=Scope.PIPELINE, default_data="dn1", custom="custom property"

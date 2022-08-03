@@ -26,7 +26,7 @@ class _Config:
     DEFAULT_KEY = "default"
 
     def __init__(self):
-        self._sections: Dict[str, Dict[Section]] = {}
+        self._sections: Dict[str, Dict[str, Section]] = {}
         self._unique_sections: Dict[str, UniqueSection] = {}
         self._global_config: GlobalAppConfig = GlobalAppConfig()
         # TO REFACTOR

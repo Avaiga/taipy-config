@@ -12,7 +12,7 @@
 from unittest import mock
 
 from src.taipy.config import Config
-from src.taipy.config.data_node.scope import Scope
+from src.taipy.config.common.scope import Scope
 
 
 class TestConfig:
