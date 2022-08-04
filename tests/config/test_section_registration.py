@@ -45,11 +45,10 @@ def test_unique_section_registration_and_usage():
 
 
 def test_sections_exposed_as_attribute():
-    assert Config.unique_section_name().attribute == "default_attribute"
-
-    assert Config.section_name()["default"].attribute == "default_attribute"
+    assert Config.unique_section_name.attribute == "default_attribute"
+    assert Config.section_name["default"].attribute == "default_attribute"
     Config.configure_section_for_tests(id="my_id", attribute="my_attribute")
-    assert Config.section_name()["my_id"].attribute == "my_attribute"
+    assert Config.section_name["my_id"].attribute == "my_attribute"
 
 
 def test_section_registration_and_usage():

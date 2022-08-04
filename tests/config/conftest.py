@@ -38,11 +38,9 @@ def reset_configuration_singleton():
 def register_test_sections():
     Config._register_default(UniqueSectionForTest("default_attribute"))
     Config.configure_unique_section_for_tests = UniqueSectionForTest._configure
-    Config.unique_section_name = lambda: Config.unique_sections[UniqueSectionForTest.name]
+    Config.unique_section_name = Config.unique_sections[UniqueSectionForTest.name]
 
-    Config._register_default(SectionForTest(Section._DEFAULT_KEY, "default_attribute",
-                                            prop="default_prop",
-                                            prop_int="0:int"))
+    Config._register_default(SectionForTest(Section._DEFAULT_KEY, "default_attribute", prop="default_prop", prop_int=0))
     Config.configure_section_for_tests = SectionForTest._configure
-    Config.section_name = lambda: Config.sections[SectionForTest.name]
+    Config.section_name = Config.sections[SectionForTest.name]
 
