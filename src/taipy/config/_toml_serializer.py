@@ -45,6 +45,11 @@ class _TomlSerializer:
 
     @classmethod
     def _write(cls, configuration: _Config, filename: str):
+        with open(filename, "w") as fd:
+            toml.dump(cls.__str(configuration), fd)
+
+    @classmethod
+    def __str(cls, configuration: _Config):
         config_as_dict = {
             cls._GLOBAL_NODE_NAME: configuration._global_config._to_dict(),
             # TO REFACTOR
@@ -59,8 +64,7 @@ class _TomlSerializer:
             config_as_dict[u_sect_name] = u_sect._to_dict()
         for sect_name, sections in configuration._sections.items():
             config_as_dict[sect_name] = cls.__to_dict(sections)
-        with open(filename, "w") as fd:
-            toml.dump(cls.__stringify(config_as_dict), fd)
+        return cls.__stringify(config_as_dict)
 
     @classmethod
     def __to_dict(cls, sections: Dict[str, Any]):
@@ -99,11 +103,19 @@ class _TomlSerializer:
     @classmethod
     def _read(cls, filename: str) -> _Config:
         try:
-            config_as_dict = cls.__pythonify(dict(toml.load(filename)))
+            config_as_dict = cls._pythonify(dict(toml.load(filename)))
             return cls.__from_dict(config_as_dict)
         except toml.TomlDecodeError as e:
             error_msg = f"Can not load configuration {e}"
             raise LoadingError(error_msg)
+
+    @classmethod
+    def _serialize(cls, configuration: _Config) -> str:
+        return toml.dumps(cls.__str(configuration))
+
+    @classmethod
+    def _deserialize(cls, config_as_string: str) -> _Config:
+        return cls.__from_dict(cls._pythonify(dict(toml.loads(config_as_string))))
 
     @staticmethod
     def __extract_node(config_as_dict, cls_config, node, config: Optional[dict]):
@@ -145,7 +157,7 @@ class _TomlSerializer:
         return config
 
     @classmethod
-    def __pythonify(cls, val):
+    def _pythonify(cls, val):
         match = re.fullmatch(_TemplateHandler._PATTERN, str(val))
         if not match:
             if isinstance(val, str):
@@ -172,7 +184,7 @@ class _TomlSerializer:
                         error_msg = f"Error loading toml configuration at {val}. {dynamic_type} type is not supported."
                         raise LoadingError(error_msg)
             if isinstance(val, dict):
-                return {str(k): cls.__pythonify(v) for k, v in val.items()}
+                return {str(k): cls._pythonify(v) for k, v in val.items()}
             if isinstance(val, list):
-                return [cls.__pythonify(v) for v in val]
+                return [cls._pythonify(v) for v in val]
         return val

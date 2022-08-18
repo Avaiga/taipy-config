@@ -28,6 +28,7 @@ from .global_app.global_app_config import GlobalAppConfig
 from .pipeline.pipeline_config import PipelineConfig
 from .common.frequency import Frequency
 from .scenario.scenario_config import ScenarioConfig
+from .section import Section
 from .task.task_config import TaskConfig
 
 
@@ -743,7 +744,7 @@ class Config:
         for issue in config._collector._errors:
             cls.__logger.error(str(issue))
         if len(config._collector._errors) != 0:
-            raise ConfigurationIssueError
+            raise ConfigurationIssueError("Configuration issues found.")
 
 
 Config._load_environment_file_config()
