@@ -11,6 +11,8 @@
 
 from importlib.util import find_spec
 
+from src.taipy.config.config import Config
+
 if find_spec('taipy'):
     if find_spec('taipy.config'):
         from taipy.config import *

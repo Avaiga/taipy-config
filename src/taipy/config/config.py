@@ -25,7 +25,6 @@ from .data_node.data_node_config import DataNodeConfig
 from .common.scope import Scope
 from .exceptions.exceptions import ConfigurationIssueError
 from .global_app.global_app_config import GlobalAppConfig
-from .job_execution.job_config import JobConfig
 from .pipeline.pipeline_config import PipelineConfig
 from .common.frequency import Frequency
 from .scenario.scenario_config import ScenarioConfig
@@ -56,11 +55,6 @@ class Config:
         return cls._applied_config._sections
 
     # TO REFACTOR
-    @_Classproperty
-    def job_config(cls) -> JobConfig:
-        """Return configuration values related to the job executions as a `JobConfig^`."""
-        return cls._applied_config._job_config
-
     @_Classproperty
     def global_config(cls) -> GlobalAppConfig:
         """Return configuration values related to the global application as a `GlobalAppConfig^`."""
@@ -120,7 +114,6 @@ class Config:
     def _export_code_config(cls, filename):
         cls._serializer._write(cls._python_config, filename)
 
-    # TO REFACTOR
     @classmethod
     def configure_global_app(
         cls,
@@ -149,36 +142,7 @@ class Config:
         cls.__compile_configs()
         return cls._applied_config._global_config
 
-    @classmethod
-    def configure_job_executions(
-        cls,
-        mode: str = None,
-        nb_of_workers: Union[int, str] = None,
-        **properties,
-    ) -> JobConfig:
-        """Configure job execution.
-
-        Parameters:
-            mode (Optional[str]): The job execution mode.
-                Possible values are: _"standalone"_ (the default value) or
-                _"development"_.
-            nb_of_workers (Optional[int, str]): Parameter used only in default _"standalone"_ mode. The maximum
-                number of jobs able to run in parallel. The default value is 1.<br/>
-                A string can be provided to dynamically set the value using an environment
-                variable. The string must follow the pattern: `ENV[&lt;env_var&gt;]` where
-                `&lt;env_var&gt;` is the name of environment variable.
-        Returns:
-            JobConfig^: The job execution configuration.
-        """
-        job_config = JobConfig(
-            mode,
-            nb_of_workers=nb_of_workers,
-            **properties,
-        )
-        cls._python_config._job_config = job_config
-        cls.__compile_configs()
-        return cls._applied_config._job_config
-
+    # TO REFACTOR
     @classmethod
     def configure_data_node(
         cls,
@@ -710,7 +674,7 @@ class Config:
         Returns:
             IssueCollector^: Collector containing the info, warning and error issues.
         """
-        cls._collector = _Checker()._check(cls._applied_config)
+        cls._collector = _Checker._check(cls._applied_config)
         cls.__log_message(cls)
         return cls._collector
 

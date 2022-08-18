@@ -1,7 +1,7 @@
 from abc import ABC
 
-from src.taipy.config import Section
-from src.taipy.config.common._validate_id import _validate_id
+from .section import Section
+from .common._validate_id import _validate_id
 
 
 class UniqueSection(Section, ABC):

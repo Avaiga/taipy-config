@@ -15,7 +15,6 @@ from typing import Dict
 from . import Section
 from .data_node.data_node_config import DataNodeConfig
 from .global_app.global_app_config import GlobalAppConfig
-from .job_execution.job_config import JobConfig
 from .pipeline.pipeline_config import PipelineConfig
 from .scenario.scenario_config import ScenarioConfig
 from .task.task_config import TaskConfig
@@ -30,7 +29,6 @@ class _Config:
         self._unique_sections: Dict[str, UniqueSection] = {}
         self._global_config: GlobalAppConfig = GlobalAppConfig()
         # TO REFACTOR
-        self._job_config: JobConfig = JobConfig()
         self._data_nodes: Dict[str, DataNodeConfig] = {}
         self._tasks: Dict[str, TaskConfig] = {}
         self._pipelines: Dict[str, PipelineConfig] = {}
@@ -42,7 +40,6 @@ class _Config:
         config = _Config()
         # TO REFACTOR
         config._global_config = GlobalAppConfig.default_config()
-        config._job_config = JobConfig().default_config()
         config._data_nodes = {cls.DEFAULT_KEY: DataNodeConfig.default_config(cls.DEFAULT_KEY)}
         config._tasks = {cls.DEFAULT_KEY: TaskConfig.default_config(cls.DEFAULT_KEY)}
         config._pipelines = {cls.DEFAULT_KEY: PipelineConfig.default_config(cls.DEFAULT_KEY)}
@@ -65,7 +62,6 @@ class _Config:
                     self._sections[section_name] = other_non_unique_sections
         # TO REFACTOR
         self._global_config._update(other_config._global_config._to_dict())
-        self._job_config._update(other_config._job_config._to_dict())
         self.__update_sections(self._data_nodes, other_config._data_nodes, DataNodeConfig)
         self.__update_sections(self._tasks, other_config._tasks, TaskConfig)
         self.__update_sections(self._pipelines, other_config._pipelines, PipelineConfig)
