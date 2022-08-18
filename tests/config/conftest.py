@@ -25,11 +25,6 @@ def reset():
     reset_configuration_singleton()
     register_test_sections()
 
-    # from src.taipy.config.job_execution.job_config import JobConfig
-    # Config._register_default(JobConfig("development"))
-    # Config.configure_job_executions = JobConfig._configure
-    # Config.job_config = Config.unique_sections[JobConfig.name]
-
 
 def reset_configuration_singleton():
     Config._default_config = _Config()._default_config()
