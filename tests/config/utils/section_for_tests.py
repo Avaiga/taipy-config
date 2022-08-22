@@ -10,9 +10,10 @@
 # specific language governing permissions and limitations under the License.
 
 from copy import copy
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from src.taipy.config import Config, Section
+from src.taipy.config._config import _Config
 
 
 class SectionForTest(Section):
@@ -43,8 +44,8 @@ class SectionForTest(Section):
         return as_dict
 
     @classmethod
-    def _from_dict(cls, as_dict: Dict[str, Any], id: str):
-        as_dict.pop(cls._ID_KEY, None)
+    def _from_dict(cls, as_dict: Dict[str, Any], id: str, config: Optional[_Config] = None):
+        as_dict.pop(cls._ID_KEY, id)
         attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
         return SectionForTest(id=id, attribute=attribute, **as_dict)
 

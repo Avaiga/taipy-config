@@ -115,7 +115,7 @@ prop_int = "0:int"
 attribute = "my_attribute"
 prop_int = "1:int"
 prop_bool = "False:bool"
-prop_list = [ "unique_section_name:SECTION", "section_name.my_id:SECTION",]
+prop_list = [ "unique_section_name", "section_name.my_id",]
 prop_scope = "SCENARIO:SCOPE"
 baz = "ENV[QUX]"
     """.strip()
@@ -151,8 +151,7 @@ baz = "ENV[QUX]"
         assert Config.sections[SectionForTest.name]["my_id"].prop is None
         assert Config.sections[SectionForTest.name]["my_id"].prop_int == 1
         assert Config.sections[SectionForTest.name]["my_id"].prop_bool is False
-        assert Config.sections[SectionForTest.name]["my_id"].prop_list == ["unique_section_name:SECTION",
-                                                                           "section_name.my_id:SECTION"]
+        assert Config.sections[SectionForTest.name]["my_id"].prop_list == ["unique_section_name", "section_name.my_id"]
         assert Config.sections[SectionForTest.name]["my_id"].prop_scope == Scope.SCENARIO
         assert Config.sections[SectionForTest.name]["my_id"].baz == "qux"
 

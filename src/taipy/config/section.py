@@ -28,7 +28,7 @@ class Section:
 
     @classmethod
     @abstractmethod
-    def _from_dict(cls, config_as_dict: Dict[str, Any], id):
+    def _from_dict(cls, config_as_dict: Dict[str, Any], id, config):
         raise NotImplemented
 
     @abstractmethod

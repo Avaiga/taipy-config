@@ -11,14 +11,13 @@
 from typing import List
 
 from ._checkers._config_checker import _ConfigChecker
-from ._checkers._data_node_config_checker import _DataNodeConfigChecker
 from ._checkers._gLobal_config_checker import _GlobalConfigChecker
 from .issue_collector import IssueCollector
 
 
 class _Checker:
     """holds the various checkers to perform on the config."""
-    _checkers: List[_ConfigChecker] = [_GlobalConfigChecker, _DataNodeConfigChecker]
+    _checkers: List[_ConfigChecker] = [_GlobalConfigChecker]
 
     @classmethod
     def _check(cls, _applied_config):

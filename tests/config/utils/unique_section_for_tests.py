@@ -10,9 +10,10 @@
 # specific language governing permissions and limitations under the License.
 
 from copy import copy
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from src.taipy.config import Config
+from src.taipy.config._config import _Config
 from src.taipy.config.unique_section import UniqueSection
 
 
@@ -44,7 +45,7 @@ class UniqueSectionForTest(UniqueSection):
         return as_dict
 
     @classmethod
-    def _from_dict(cls, as_dict: Dict[str, Any], id=None):
+    def _from_dict(cls, as_dict: Dict[str, Any], id=None, config: Optional[_Config] = None):
         as_dict.pop(cls._ID_KEY, id)
         attribute = as_dict.pop(cls._MY_ATTRIBUTE_KEY, None)
         return UniqueSectionForTest(attribute=attribute, **as_dict)

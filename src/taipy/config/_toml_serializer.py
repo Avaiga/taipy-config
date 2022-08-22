@@ -34,13 +34,6 @@ class _TomlSerializer:
     """Convert configuration from TOML representation to Python Dict and reciprocally."""
 
     _GLOBAL_NODE_NAME = "TAIPY"
-    # TO REFACTOR
-    # _JOB_NODE_NAME = "JOB"
-    # _DATA_NODE_NAME = "DATA_NODE"
-    # _TASK_NODE_NAME = "TASK"
-    # _PIPELINE_NODE_NAME = "PIPELINE"
-    # _SCENARIO_NODE_NAME = "SCENARIO"
-    # END REFACTOR
     _section_class = {_GLOBAL_NODE_NAME: GlobalAppConfig}
 
     @classmethod
@@ -50,16 +43,7 @@ class _TomlSerializer:
 
     @classmethod
     def __str(cls, configuration: _Config):
-        config_as_dict = {
-            cls._GLOBAL_NODE_NAME: configuration._global_config._to_dict(),
-            # TO REFACTOR
-            # cls._JOB_NODE_NAME: configuration._job_config._to_dict(),
-            # cls._DATA_NODE_NAME: cls.__to_dict(configuration._data_nodes),
-            # cls._TASK_NODE_NAME: cls.__to_dict(configuration._tasks),
-            # cls._PIPELINE_NODE_NAME: cls.__to_dict(configuration._pipelines),
-            # cls._SCENARIO_NODE_NAME: cls.__to_dict(configuration._scenarios),
-            # END REFACTOR
-        }
+        config_as_dict = {cls._GLOBAL_NODE_NAME: configuration._global_config._to_dict()}
         for u_sect_name, u_sect in configuration._unique_sections.items():
             config_as_dict[u_sect_name] = u_sect._to_dict()
         for sect_name, sections in configuration._sections.items():
@@ -80,12 +64,6 @@ class _TomlSerializer:
             return as_dict.name + ":SCOPE"
         if isinstance(as_dict, Frequency):
             return as_dict.name + ":FREQUENCY"
-        # if isinstance(as_dict, DataNodeConfig):
-        #     return as_dict.id
-        # if isinstance(as_dict, TaskConfig):
-        #     return as_dict.id
-        # if isinstance(as_dict, PipelineConfig):
-        #     return as_dict.id
         if isinstance(as_dict, bool):
             return str(as_dict) + ":bool"
         if isinstance(as_dict, int):
@@ -118,42 +96,24 @@ class _TomlSerializer:
         return cls.__from_dict(cls._pythonify(dict(toml.loads(config_as_string))))
 
     @staticmethod
-    def __extract_node(config_as_dict, cls_config, node, config: Optional[dict]):
+    def __extract_node(config_as_dict, cls_config, node, config: Optional[dict]) -> Dict[str, Section]:
         res = {}
-        for key, value in config_as_dict.get(node, {}).items():
+        for key, value in config_as_dict.get(node, {}).items(): # my_task, {input=[], output=[my_data_node], ...}
             key = _validate_id(key)
-            res[key] = (
-                cls_config._from_dict(value, key) # if config is None else cls_config._from_dict(key, value, config)
-            )
+            res[key] = cls_config._from_dict(value, key, config) # if config is None else cls_config._from_dict(key,
+            # value, config)
         return res
 
-    # @staticmethod
-    # def TMP__extract_node(config_as_dict, cls_config, node, config: Optional[dict]):
-    #     res = {}
-    #     for key, value in config_as_dict.get(node, {}).items():
-    #         key = _validate_id(key)
-    #         res[key] = (
-    #             cls_config._from_dict(key, value) if config is None else cls_config._from_dict(key, value, config)
-    #         )
-    #     return res
-
     @classmethod
-    def __from_dict(cls, config_as_dict) -> _Config:
+    def __from_dict(cls, as_dict) -> _Config:
         config = _Config()
-        config._global_config = GlobalAppConfig._from_dict(config_as_dict.get(cls._GLOBAL_NODE_NAME, {}))
-        # config._job_config = JobConfig._from_dict(config_as_dict.get(cls._JOB_NODE_NAME, {}))
-        # config._data_nodes = cls.TMP__extract_node(config_as_dict, DataNodeConfig, cls._DATA_NODE_NAME, None)
-        # config._tasks = cls.TMP__extract_node(config_as_dict, TaskConfig, cls._TASK_NODE_NAME, config._data_nodes)
-        # config._pipelines = cls.TMP__extract_node(config_as_dict, PipelineConfig, cls._PIPELINE_NODE_NAME, config._tasks)
-        # config._scenarios = cls.TMP__extract_node(
-        #     config_as_dict, ScenarioConfig, cls._SCENARIO_NODE_NAME, config._pipelines
-        # )
-        for section_name, sect_as_dict in config_as_dict.items():
+        config._global_config = GlobalAppConfig._from_dict(as_dict.get(cls._GLOBAL_NODE_NAME, {}))
+        for section_name, sect_as_dict in as_dict.items():
             if section_class := cls._section_class.get(section_name, None):
                 if issubclass(section_class, UniqueSection):
                     config._unique_sections[section_name] = section_class._from_dict(sect_as_dict, None)
                 elif issubclass(section_class, Section):
-                    config._sections[section_name] = cls.__extract_node(config_as_dict, section_class, section_name, None)
+                    config._sections[section_name] = cls.__extract_node(as_dict, section_class, section_name, config)
         return config
 
     @classmethod
@@ -161,7 +121,7 @@ class _TomlSerializer:
         match = re.fullmatch(_TemplateHandler._PATTERN, str(val))
         if not match:
             if isinstance(val, str):
-                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bfloat\b|\bint\b|\bSCOPE\b|\bFREQUENCY\b)?$"
+                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bfloat\b|\bint\b|\bSCOPE\b|\bFREQUENCY\b|\bSECTION\b)?$"
                 match = re.fullmatch(TYPE_PATTERN, str(val))
                 if match:
                     actual_val = match.group(1)

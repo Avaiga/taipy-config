@@ -12,39 +12,33 @@
 import pytest
 
 from src.taipy.config.common.scope import Scope
-from src.taipy.config.config import Config
 
 
 def test_scope():
-    data_node_config_1 = Config.configure_data_node("data_node_config_1", "in_memory", Scope.PIPELINE)
-    data_node_config_2 = Config.configure_data_node("data_node_config_2", "in_memory", Scope.SCENARIO)
-    data_node_config_3 = Config.configure_data_node("data_node_config_3", "in_memory", Scope.GLOBAL)
-    data_node_config_4 = Config.configure_data_node("data_node_config_4", "in_memory", Scope.PIPELINE)
-
     # Test __ge__ method
-    assert data_node_config_2.scope >= data_node_config_1.scope
-    assert data_node_config_2.scope >= data_node_config_2.scope
-    assert data_node_config_1.scope >= data_node_config_4.scope
+    assert Scope.SCENARIO >= Scope.PIPELINE
+    assert Scope.SCENARIO >= Scope.SCENARIO
+    assert Scope.PIPELINE >= Scope.PIPELINE
     with pytest.raises(TypeError):
-        assert data_node_config_1.scope >= "testing string"
+        assert Scope.PIPELINE >= "testing string"
 
     # Test __gt__ method
-    assert data_node_config_3.scope > data_node_config_1.scope
-    assert data_node_config_3.scope > data_node_config_2.scope
-    assert data_node_config_3.scope > data_node_config_4.scope
+    assert Scope.GLOBAL > Scope.PIPELINE
+    assert Scope.GLOBAL > Scope.SCENARIO
+    assert Scope.GLOBAL > Scope.PIPELINE
     with pytest.raises(TypeError):
-        assert data_node_config_4.scope > "testing string"
+        assert Scope.PIPELINE > "testing string"
 
     # Test __le__ method
-    assert data_node_config_1.scope <= data_node_config_2.scope
-    assert data_node_config_1.scope <= data_node_config_1.scope
-    assert data_node_config_4.scope <= data_node_config_2.scope
+    assert Scope.PIPELINE <= Scope.SCENARIO
+    assert Scope.PIPELINE <= Scope.PIPELINE
+    assert Scope.PIPELINE <= Scope.SCENARIO
     with pytest.raises(TypeError):
-        assert data_node_config_1.scope <= "testing string"
+        assert Scope.PIPELINE <= "testing string"
 
     # Test __lt__ method
-    assert data_node_config_1.scope < data_node_config_2.scope
-    assert data_node_config_4.scope < data_node_config_2.scope
-    assert data_node_config_2.scope < data_node_config_3.scope
+    assert Scope.PIPELINE < Scope.SCENARIO
+    assert Scope.PIPELINE < Scope.SCENARIO
+    assert Scope.SCENARIO < Scope.GLOBAL
     with pytest.raises(TypeError):
-        assert data_node_config_1.scope < "testing string"
+        assert Scope.PIPELINE < "testing string"

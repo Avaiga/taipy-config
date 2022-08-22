@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.taipy import Config
+from src.taipy.config import Config
 from src.taipy.config.checker._checker import _Checker
 from src.taipy.config.checker.issue_collector import IssueCollector
 from src.taipy.config.exceptions.exceptions import ConfigurationIssueError

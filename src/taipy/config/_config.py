@@ -12,12 +12,8 @@
 from copy import copy
 from typing import Dict
 
-from .section import Section
-from .data_node.data_node_config import DataNodeConfig
 from .global_app.global_app_config import GlobalAppConfig
-from .pipeline.pipeline_config import PipelineConfig
-from .scenario.scenario_config import ScenarioConfig
-from .task.task_config import TaskConfig
+from .section import Section
 from .unique_section import UniqueSection
 
 
@@ -28,26 +24,15 @@ class _Config:
         self._sections: Dict[str, Dict[str, Section]] = {}
         self._unique_sections: Dict[str, UniqueSection] = {}
         self._global_config: GlobalAppConfig = GlobalAppConfig()
-        # TO REFACTOR
-        self._data_nodes: Dict[str, DataNodeConfig] = {}
-        self._tasks: Dict[str, TaskConfig] = {}
-        self._pipelines: Dict[str, PipelineConfig] = {}
-        self._scenarios: Dict[str, ScenarioConfig] = {}
-        # END REFACTOR
 
     @classmethod
     def _default_config(cls):
         config = _Config()
-        # TO REFACTOR
         config._global_config = GlobalAppConfig.default_config()
-        config._data_nodes = {cls.DEFAULT_KEY: DataNodeConfig.default_config(cls.DEFAULT_KEY)}
-        config._tasks = {cls.DEFAULT_KEY: TaskConfig.default_config(cls.DEFAULT_KEY)}
-        config._pipelines = {cls.DEFAULT_KEY: PipelineConfig.default_config(cls.DEFAULT_KEY)}
-        config._scenarios = {cls.DEFAULT_KEY: ScenarioConfig.default_config(cls.DEFAULT_KEY)}
-        # END REFACTOR
         return config
 
     def _update(self, other_config):
+        self._global_config._update(other_config._global_config._to_dict())
         if other_config._unique_sections:
             for section_name, other_section in other_config._unique_sections.items():
                 if section := self._unique_sections.get(section_name, None):
@@ -60,13 +45,6 @@ class _Config:
                     self.__update_sections(non_unique_sections, other_non_unique_sections, None)
                 else:
                     self._sections[section_name] = other_non_unique_sections
-        # TO REFACTOR
-        self._global_config._update(other_config._global_config._to_dict())
-        self.__update_sections(self._data_nodes, other_config._data_nodes, DataNodeConfig)
-        self.__update_sections(self._tasks, other_config._tasks, TaskConfig)
-        self.__update_sections(self._pipelines, other_config._pipelines, PipelineConfig)
-        self.__update_sections(self._scenarios, other_config._scenarios, ScenarioConfig)
-        # END REFACTOR
 
     def __update_sections(self, entity_config, other_entity_configs, _class):
         if self.DEFAULT_KEY in other_entity_configs:
