@@ -653,6 +653,7 @@ class Config:
         db_port: int = 1433,
         db_host: str = "localhost",
         db_driver: str = "ODBC Driver 17 for SQL Server",
+        db_extra_args: Dict[str, Any] = None,
         scope: Scope = DataNodeConfig._DEFAULT_SCOPE,
         **properties,
     ):
@@ -670,6 +671,7 @@ class Config:
             db_host (str): The database host. The default value is _"localhost"_.
             db_driver (str): The database driver. The default value is
                 _"ODBC Driver 17 for SQL Server"_.
+            db_extra_args (Dict[str, Any]): A dictionary of additional arguments to be passed into database connnection string.
             scope (Scope^): The scope of the SQL data node configuration. The default value is
                 `Scope.SCENARIO`.
             **properties (Dict[str, Any]): A keyworded variable length list of additional
@@ -690,6 +692,7 @@ class Config:
             read_query=read_query,
             write_table=write_table,
             db_port=db_port,
+            db_extra_args=db_extra_args,
             **properties,
         )
 

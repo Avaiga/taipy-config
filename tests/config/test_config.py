@@ -63,7 +63,7 @@ class TestConfig:
             )
 
     def test_configure_sql_data_node(self):
-        a, b, c, d, e, f, g, h, i, j, scope, k = (
+        a, b, c, d, e, f, g, h, i, j, extra_args, scope, k = (
             "foo",
             "user",
             "pwd",
@@ -74,11 +74,12 @@ class TestConfig:
             "port",
             "host",
             "driver",
+            {"foo": "bar"},
             Scope.PIPELINE,
             "qux",
         )
         with mock.patch("src.taipy.config.config.Config.configure_data_node") as mck:
-            Config.configure_sql_data_node(a, b, c, d, e, f, g, h, i, j, scope=scope, property=k)
+            Config.configure_sql_data_node(a, b, c, d, e, f, g, h, i, j, extra_args, scope=scope, property=k)
             mck.assert_called_once_with(
                 a,
                 "sql",
@@ -89,6 +90,7 @@ class TestConfig:
                 db_engine=e,
                 read_query=f,
                 write_table=g,
+                db_extra_args=extra_args,
                 db_port=h,
                 db_host=i,
                 db_driver=j,
