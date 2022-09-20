@@ -15,6 +15,7 @@ def test_write_configuration_file():
 root_folder = "./taipy/"
 storage_folder = ".data/"
 clean_entities_enabled = "True:bool"
+repository_type = "filesystem"
 
 [unique_section_name]
 attribute = "my_attribute"
@@ -93,6 +94,7 @@ def test_read_configuration_file():
 root_folder = "./taipy/"
 storage_folder = ".data/"
 clean_entities_enabled = "True:bool"
+repository_type = "filesystem"
 
 [unique_section_name]
 attribute = "my_attribute"
