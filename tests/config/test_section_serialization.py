@@ -108,6 +108,9 @@ baz = "ENV[QUX]"
 quux = "ENV[QUUZ]:bool"
 corge = [ "grault", "ENV[GARPLY]", "ENV[WALDO]:int", "3.0:float",]
 
+[TAIPY.repository_properties]
+db_location = "foo.db"
+
 [section_name.default]
 attribute = "default_attribute"
 prop = "default_prop"
