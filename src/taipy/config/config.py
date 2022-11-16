@@ -12,8 +12,9 @@
 import os
 from typing import Dict, Optional, Union
 
+from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
-from ._toml_serializer import _TomlSerializer
+from ._serializer import _ConfigSerializer
 from .checker._checker import _Checker
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
@@ -21,7 +22,6 @@ from .exceptions.exceptions import ConfigurationIssueError
 from .global_app.global_app_config import GlobalAppConfig
 from .section import Section
 from .unique_section import UniqueSection
-from ..logger._taipy_logger import _TaipyLogger
 
 
 class Config:
@@ -35,7 +35,7 @@ class Config:
     _env_file_config = None
     _applied_config = _Config._default_config()
     _collector = IssueCollector()
-    _serializer = _TomlSerializer()
+    _serializer = _ConfigSerializer()
 
     @_Classproperty
     def unique_sections(cls) -> Dict[str, UniqueSection]:

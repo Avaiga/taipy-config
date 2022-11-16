@@ -9,12 +9,15 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
+import json
 import re
+from types import ModuleType
 from typing import Any, Dict, Optional
 
 import toml  # type: ignore
 
 from . import Section
+
 # from .job_execution.job_config import JobConfig
 # from .data_node.data_node_config import DataNodeConfig
 # from .task.task_config import TaskConfig
@@ -25,21 +28,29 @@ from .common._template_handler import _TemplateHandler
 from .common._validate_id import _validate_id
 from .common.frequency import Frequency
 from .common.scope import Scope
-from .exceptions.exceptions import LoadingError
+from .exceptions.exceptions import LoadingError, UnknownSerializerError
 from .global_app.global_app_config import GlobalAppConfig
 from .unique_section import UniqueSection
 
 
-class _TomlSerializer:
+class _ConfigSerializer:
     """Convert configuration from TOML representation to Python Dict and reciprocally."""
 
     _GLOBAL_NODE_NAME = "TAIPY"
+    _SERIALIZER_MAP = {"toml": toml, "json": json}
     _section_class = {_GLOBAL_NODE_NAME: GlobalAppConfig}
 
     @classmethod
-    def _write(cls, configuration: _Config, filename: str):
+    def _write(cls, configuration: _Config, filename: str, serializer_type: str = "toml"):
         with open(filename, "w") as fd:
-            toml.dump(cls.__str(configuration), fd)
+            cls.__fetch_serializer(serializer_type).dump(cls.__str(configuration), fd)
+
+    @classmethod
+    def __fetch_serializer(cls, serializer_type: str) -> ModuleType:
+        serializer = cls._SERIALIZER_MAP.get(serializer_type)
+        if not serializer:
+            raise UnknownSerializerError(f"Serializer {serializer_type} is not supported.")
+        return serializer
 
     @classmethod
     def __str(cls, configuration: _Config):
@@ -79,21 +90,22 @@ class _TomlSerializer:
         return as_dict
 
     @classmethod
-    def _read(cls, filename: str) -> _Config:
+    def _read(cls, filename: str, serializer_type: str = "toml") -> _Config:
         try:
-            config_as_dict = cls._pythonify(dict(toml.load(filename)))
+            with open(filename) as f:
+                config_as_dict = cls._pythonify(dict(cls.__fetch_serializer(serializer_type).load(f)))
             return cls.__from_dict(config_as_dict)
-        except toml.TomlDecodeError as e:
+        except (toml.TomlDecodeError, json.JSONDecodeError) as e:
             error_msg = f"Can not load configuration {e}"
             raise LoadingError(error_msg)
 
     @classmethod
-    def _serialize(cls, configuration: _Config) -> str:
-        return toml.dumps(cls.__str(configuration))
+    def _serialize(cls, configuration: _Config, serializer_type: str = "toml") -> str:
+        return cls.__fetch_serializer(serializer_type).dumps(cls.__str(configuration))
 
     @classmethod
-    def _deserialize(cls, config_as_string: str) -> _Config:
-        return cls.__from_dict(cls._pythonify(dict(toml.loads(config_as_string))))
+    def _deserialize(cls, config_as_string: str, serializer_type: str = "toml") -> _Config:
+        return cls.__from_dict(cls._pythonify(dict(cls.__fetch_serializer(serializer_type).loads(config_as_string))))
 
     @staticmethod
     def __extract_node(config_as_dict, cls_config, node, config: Optional[Any]) -> Dict[str, Section]:

@@ -28,3 +28,7 @@ class MissingEnvVariableError(Exception):
 
 class InvalidConfigurationId(Exception):
     """Configuration id is not valid."""
+
+
+class UnknownSerializerError(Exception):
+    """Serializer type is not supported."""

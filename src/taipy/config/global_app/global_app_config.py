@@ -43,7 +43,7 @@ class GlobalAppConfig:
     _REPOSITORY_TYPE_KEY = "repository_type"
     _DEFAULT_REPOSITORY_TYPE = "filesystem"
     _REPOSITORY_PROPERTIES_KEY = "repository_properties"
-    _DEFAULT_REPOSITORY_PROPERTIES = dict()
+    _DEFAULT_REPOSITORY_PROPERTIES = dict()  # type: ignore
 
     def __init__(
         self,
@@ -86,16 +86,15 @@ class GlobalAppConfig:
     @clean_entities_enabled.setter  # type: ignore
     def clean_entities_enabled(self, val):
         self._clean_entities_enabled = val
-    
+
     @property
     def repository_type(self):
         return _tpl._replace_templates(self._repository_type)
-    
+
     @repository_type.setter  # type: ignore
     def repository_type(self, val):
         print(f"setter {val}")
         self._repository_type = val
-    
 
     @property
     def repository_properties(self):
