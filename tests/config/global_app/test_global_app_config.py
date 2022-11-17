@@ -64,9 +64,6 @@ def test_block_update_global_app_config():
         Config.configure_global_app(root_folder="./new_root_folder/", storage_folder=".new_storage/")
 
     with pytest.raises(ConfigurationUpdateBlocked):
-        Config.configure_global_app(root_folder="./new_root_folder/", storage_folder=".new_storage/")
-
-    with pytest.raises(ConfigurationUpdateBlocked):
         Config.global_config.root_folder = "./new_root_folder/"
 
     with pytest.raises(ConfigurationUpdateBlocked):
