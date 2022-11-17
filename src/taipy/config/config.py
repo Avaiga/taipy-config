@@ -29,7 +29,6 @@ class Config:
     """Configuration singleton."""
 
     _ENVIRONMENT_VARIABLE_NAME_WITH_CONFIG_PATH = "TAIPY_CONFIG_PATH"
-    __block_update = False
     __logger = _TaipyLogger._get_logger()
     _default_config = _Config._default_config()
     _python_config = _Config()
