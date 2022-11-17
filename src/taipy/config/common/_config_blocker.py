@@ -11,7 +11,7 @@
 
 import functools
 
-from src.taipy.config.exceptions.exceptions import ConfigurationUpdateBlocked
+from ..exceptions.exceptions import ConfigurationUpdateBlocked
 
 
 class _ConfigBlocker:
