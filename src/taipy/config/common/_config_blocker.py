@@ -32,7 +32,7 @@ class _ConfigBlocker:
         def inner(f):
             @functools.wraps(f)
             def _check_if_is_blocking(*args, **kwargs):
-                if _ConfigBlocker.__block_config_update:
+                if cls.__block_config_update:
                     raise ConfigurationUpdateBlocked()
 
                 return f(*args, **kwargs)
