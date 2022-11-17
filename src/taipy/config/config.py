@@ -12,7 +12,9 @@
 import os
 from typing import Dict, Optional, Union
 
+from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
+from ._json_serializer import _JsonSerializer
 from ._toml_serializer import _TomlSerializer
 from .checker._checker import _Checker
 from .checker.issue_collector import IssueCollector
@@ -21,7 +23,6 @@ from .exceptions.exceptions import ConfigurationIssueError
 from .global_app.global_app_config import GlobalAppConfig
 from .section import Section
 from .unique_section import UniqueSection
-from ..logger._taipy_logger import _TaipyLogger
 
 
 class Config:
@@ -36,6 +37,7 @@ class Config:
     _applied_config = _Config._default_config()
     _collector = IssueCollector()
     _serializer = _TomlSerializer()
+    __json_serializer = _JsonSerializer()
 
     @_Classproperty
     def unique_sections(cls) -> Dict[str, UniqueSection]:
@@ -192,6 +194,14 @@ class Config:
             cls.__logger.error(str(issue))
         if len(config._collector._errors) != 0:
             raise ConfigurationIssueError("Configuration issues found.")
+
+    @classmethod
+    def _to_json(cls):
+        return cls.__json_serializer._serialize(cls._applied_config)
+
+    @classmethod
+    def _from_json(cls, config_as_str: str):
+        return cls.__json_serializer._deserialize(config_as_str)
 
 
 Config._load_environment_file_config()
