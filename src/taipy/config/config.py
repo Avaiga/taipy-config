@@ -144,6 +144,7 @@ class Config:
             else:
                 cls._default_config._sections[default_section.name] = {default_section.id: default_section}
         cls._serializer._section_class[default_section.name] = default_section.__class__
+        cls.__json_serializer._section_class[default_section.name] = default_section.__class__
         cls.__compile_configs()
 
     @classmethod
@@ -162,6 +163,7 @@ class Config:
             else:
                 cls._python_config._sections[section.name] = {section.id: section}
         cls._serializer._section_class[section.name] = section.__class__
+        cls.__json_serializer._section_class[section.name] = section.__class__
         cls.__compile_configs()
 
     @classmethod
@@ -196,8 +198,8 @@ class Config:
             raise ConfigurationIssueError("Configuration issues found.")
 
     @classmethod
-    def _to_json(cls):
-        return cls.__json_serializer._serialize(cls._applied_config)
+    def _to_json(cls, _config):
+        return cls.__json_serializer._serialize(_config)
 
     @classmethod
     def _from_json(cls, config_as_str: str):
