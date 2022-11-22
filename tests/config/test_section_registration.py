@@ -9,7 +9,10 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
+import pytest
+
 from src.taipy.config import Config
+from src.taipy.config.exceptions.exceptions import ConfigurationUpdateBlocked
 from tests.config.utils.section_for_tests import SectionForTest
 from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
 
@@ -131,3 +134,38 @@ def test_section_registration_and_usage():
     assert my2ndSection.attribute == "my_2nd_attribute"
     assert my2ndSection.prop == "my_2nd_prop"
     assert my2ndSection.foo is None
+
+
+def test_block_registration():
+    myUniqueSection = Config.configure_unique_section_for_tests(attribute="my_unique_attribute", prop="my_unique_prop")
+    mySection = Config.configure_section_for_tests(id="section_id", attribute="my_attribute", prop="my_prop", foo="bar")
+
+    Config.block_update()
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        myNewUniqueSection = Config.configure_unique_section_for_tests(
+            attribute="my_new_unique_attribute", prop="my_new_unique_prop"
+        )
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        myNewSection = Config.configure_section_for_tests(id="new", attribute="my_attribute", prop="my_prop", foo="bar")
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        myUniqueSection.attribute = "foo"
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        myUniqueSection.properties = {"foo": "bar"}
+
+    # myUniqueSection stay the same
+    assert myUniqueSection.attribute == "my_unique_attribute"
+    assert myUniqueSection.properties == {"prop": "my_unique_prop"}
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        mySection.attribute = "foo"
+
+    with pytest.raises(ConfigurationUpdateBlocked):
+        mySection.properties = {"foo": "foo"}
+
+    # mySection stay the same
+    assert mySection.attribute == "my_attribute"
+    assert mySection.properties == {"prop": "my_prop", "foo": "bar"}

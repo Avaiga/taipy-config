@@ -10,7 +10,7 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-from typing import Dict, Optional, Union
+from typing import Dict, Union
 
 from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
@@ -19,6 +19,7 @@ from ._toml_serializer import _TomlSerializer
 from .checker._checker import _Checker
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
+from .common._config_blocker import _ConfigBlocker
 from .exceptions.exceptions import ConfigurationIssueError
 from .global_app.global_app_config import GlobalAppConfig
 from .section import Section
@@ -55,6 +56,7 @@ class Config:
         return cls._applied_config._global_config
 
     @classmethod
+    @_ConfigBlocker._check()
     def load(cls, filename):
         """Load a configuration file.
 
@@ -84,10 +86,21 @@ class Config:
         cls._serializer._write(cls._applied_config, filename)
 
     @classmethod
+    def block_update(cls):
+        """Block update on the configuration signgleton."""
+        _ConfigBlocker._block()
+
+    @classmethod
+    def unblock_update(cls):
+        """Unblock update on the configuration signgleton."""
+        _ConfigBlocker._unblock()
+
+    @classmethod
     def _export_code_config(cls, filename):
         cls._serializer._write(cls._python_config, filename)
 
     @classmethod
+    @_ConfigBlocker._check()
     def configure_global_app(
         cls,
         root_folder: str = None,
@@ -129,6 +142,7 @@ class Config:
         return cls._collector
 
     @classmethod
+    @_ConfigBlocker._check()
     def _register_default(cls, default_section: Section):
         if isinstance(default_section, UniqueSection):
             if cls._default_config._unique_sections.get(default_section.name, None):
@@ -148,6 +162,7 @@ class Config:
         cls.__compile_configs()
 
     @classmethod
+    @_ConfigBlocker._check()
     def _register(cls, section):
         if isinstance(section, UniqueSection):
             if cls._python_config._unique_sections.get(section.name, None):
