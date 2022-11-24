@@ -9,6 +9,7 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
+import inspect
 import re
 from abc import abstractmethod
 from typing import Any, Dict, Optional
@@ -64,6 +65,10 @@ class _BaseSerializer(object):
             return str(as_dict) + ":int"
         if isinstance(as_dict, float):
             return str(as_dict) + ":float"
+        if inspect.isfunction(as_dict):
+            return as_dict.__module__ + "." + as_dict.__name__ + ":function"
+        if inspect.isclass(as_dict):
+            return as_dict.__module__ + "." + as_dict.__qualname__ + ":class"
         if isinstance(as_dict, dict):
             return {str(key): cls._stringify(val) for key, val in as_dict.items()}
         if isinstance(as_dict, list):
@@ -98,7 +103,7 @@ class _BaseSerializer(object):
         match = re.fullmatch(_TemplateHandler._PATTERN, str(val))
         if not match:
             if isinstance(val, str):
-                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bfloat\b|\bint\b|\bSCOPE\b|\bFREQUENCY\b|\bSECTION\b)?$"
+                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bfloat\b|\bint\b|\bfunction\b|\bclass\b|\bSCOPE\b|\bFREQUENCY\b|\bSECTION\b)?$"
                 match = re.fullmatch(TYPE_PATTERN, str(val))
                 if match:
                     actual_val = match.group(1)
@@ -115,6 +120,10 @@ class _BaseSerializer(object):
                         return _TemplateHandler._to_int(actual_val)
                     elif dynamic_type == "float":
                         return _TemplateHandler._to_float(actual_val)
+                    elif dynamic_type == "function":
+                        return _TemplateHandler._to_function(actual_val)
+                    elif dynamic_type == "class":
+                        return _TemplateHandler._to_class(actual_val)
                     elif dynamic_type == "str":
                         return actual_val
                     else:
