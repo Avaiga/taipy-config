@@ -108,7 +108,7 @@ class _TemplateHandler:
 
     @staticmethod
     def _to_function(val: str):
-        module_name, fct_name = val.split(".")
+        module_name, fct_name = val.rsplit(".", 1)
         try:
             module = import_module(module_name)
             return attrgetter(fct_name)(module)
