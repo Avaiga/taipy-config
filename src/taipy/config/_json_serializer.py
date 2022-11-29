@@ -22,7 +22,7 @@ class _JsonSerializer(_BaseSerializer):
     @classmethod
     def _write(cls, configuration: _Config, filename: str):
         with open(filename, "w") as fd:
-            json.dump(cls._str(configuration), fd, indent=4)
+            json.dump(cls._str(configuration), fd, ensure_ascii=False, indent=0, check_circular=False)
 
     @classmethod
     def _read(cls, filename: str) -> _Config:
@@ -36,7 +36,7 @@ class _JsonSerializer(_BaseSerializer):
 
     @classmethod
     def _serialize(cls, configuration: _Config) -> str:
-        return json.dumps(cls._str(configuration), indent=4)
+        return json.dumps(cls._str(configuration), ensure_ascii=False, indent=0, check_circular=False)
 
     @classmethod
     def _deserialize(cls, config_as_string: str) -> _Config:

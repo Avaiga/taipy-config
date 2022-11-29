@@ -123,7 +123,6 @@ baz = "ENV[QUX]"
         # Config.export(tf2.filename)
 
         # actual_config_2 = tf2.read().strip()
-        # print(actual_config_2)
         # assert actual_config_2 == expected_toml_config
 
 
@@ -265,40 +264,40 @@ prop_class_list = [ "tests.config.test_section_serialization.CustomClass:class",
 def test_write_json_configuration_file():
     expected_json_config = """
 {
-    "TAIPY": {
-        "root_folder": "./taipy/",
-        "storage_folder": ".data/",
-        "clean_entities_enabled": "True:bool",
-        "repository_type": "filesystem"
-    },
-    "unique_section_name": {
-        "attribute": "my_attribute",
-        "prop": "my_prop",
-        "prop_int": "1:int",
-        "prop_bool": "False:bool",
-        "prop_list": [
-            "p1"
-        ],
-        "prop_scope": "SCENARIO:SCOPE",
-        "prop_freq": "QUARTERLY:FREQUENCY"
-    },
-    "section_name": {
-        "default": {
-            "attribute": "default_attribute",
-            "prop": "default_prop",
-            "prop_int": "0:int"
-        },
-        "my_id": {
-            "attribute": "my_attribute",
-            "prop_int": "1:int",
-            "prop_bool": "False:bool",
-            "prop_list": [
-                "unique_section_name:SECTION"
-            ],
-            "prop_scope": "SCENARIO",
-            "baz": "ENV[QUX]"
-        }
-    }
+"TAIPY": {
+"root_folder": "./taipy/",
+"storage_folder": ".data/",
+"clean_entities_enabled": "True:bool",
+"repository_type": "filesystem"
+},
+"unique_section_name": {
+"attribute": "my_attribute",
+"prop": "my_prop",
+"prop_int": "1:int",
+"prop_bool": "False:bool",
+"prop_list": [
+"p1"
+],
+"prop_scope": "SCENARIO:SCOPE",
+"prop_freq": "QUARTERLY:FREQUENCY"
+},
+"section_name": {
+"default": {
+"attribute": "default_attribute",
+"prop": "default_prop",
+"prop_int": "0:int"
+},
+"my_id": {
+"attribute": "my_attribute",
+"prop_int": "1:int",
+"prop_bool": "False:bool",
+"prop_list": [
+"unique_section_name:SECTION"
+],
+"prop_scope": "SCENARIO",
+"baz": "ENV[QUX]"
+}
+}
 }
     """.strip()
     tf = NamedTemporaryFile()
@@ -327,46 +326,45 @@ def test_write_json_configuration_file():
     )
     Config.export(tf.filename)
     actual_config = tf.read()
-    print(actual_config)
     assert actual_config == expected_json_config
 
 
 def test_read_json_configuration_file():
     json_config = """
 {
-    "TAIPY": {
-        "root_folder": "./taipy/",
-        "storage_folder": ".data/",
-        "clean_entities_enabled": "True:bool",
-        "repository_type": "filesystem"
-    },
-    "unique_section_name": {
-        "attribute": "my_attribute",
-        "prop": "my_prop",
-        "prop_int": "1:int",
-        "prop_bool": "False:bool",
-        "prop_list": [
-            "p1"
-        ],
-        "prop_scope": "SCENARIO:SCOPE",
-        "prop_freq": "QUARTERLY:FREQUENCY"
-    },
-    "section_name": {
-        "default": {
-            "attribute": "default_attribute",
-            "prop": "default_prop",
-            "prop_int": "0:int"
-        },
-        "my_id": {
-            "attribute": "my_attribute",
-            "prop_int": "1:int",
-            "prop_bool": "False:bool",
-            "prop_list": [
-                "unique_section_name"
-            ],
-            "prop_scope": "SCENARIO"
-        }
-    }
+"TAIPY": {
+"root_folder": "./taipy/",
+"storage_folder": ".data/",
+"clean_entities_enabled": "True:bool",
+"repository_type": "filesystem"
+},
+"unique_section_name": {
+"attribute": "my_attribute",
+"prop": "my_prop",
+"prop_int": "1:int",
+"prop_bool": "False:bool",
+"prop_list": [
+"p1"
+],
+"prop_scope": "SCENARIO:SCOPE",
+"prop_freq": "QUARTERLY:FREQUENCY"
+},
+"section_name": {
+"default": {
+"attribute": "default_attribute",
+"prop": "default_prop",
+"prop_int": "0:int"
+},
+"my_id": {
+"attribute": "my_attribute",
+"prop_int": "1:int",
+"prop_bool": "False:bool",
+"prop_list": [
+"unique_section_name"
+],
+"prop_scope": "SCENARIO"
+}
+}
 }
     """.strip()
     Config._serializer = _JsonSerializer()
@@ -410,36 +408,36 @@ def test_read_json_configuration_file():
 def test_read_write_json_configuration_file_with_function_and_class():
     expected_json_config = """
 {
-    "TAIPY": {
-        "root_folder": "./taipy/",
-        "storage_folder": ".data/",
-        "clean_entities_enabled": "True:bool",
-        "repository_type": "filesystem"
-    },
-    "unique_section_name": {
-        "attribute": "my_attribute",
-        "prop": "my_prop",
-        "prop_list": [
-            "tests.config.test_section_serialization.CustomEncoder:class",
-            "tests.config.test_section_serialization.CustomDecoder:class"
-        ]
-    },
-    "section_name": {
-        "default": {
-            "attribute": "default_attribute",
-            "prop": "default_prop",
-            "prop_int": "0:int"
-        },
-        "my_id": {
-            "attribute": "my_attribute",
-            "prop_fct_list": [
-                "tests.config.test_section_serialization.add:function"
-            ],
-            "prop_class_list": [
-                "tests.config.test_section_serialization.CustomClass:class"
-            ]
-        }
-    }
+"TAIPY": {
+"root_folder": "./taipy/",
+"storage_folder": ".data/",
+"clean_entities_enabled": "True:bool",
+"repository_type": "filesystem"
+},
+"unique_section_name": {
+"attribute": "my_attribute",
+"prop": "my_prop",
+"prop_list": [
+"tests.config.test_section_serialization.CustomEncoder:class",
+"tests.config.test_section_serialization.CustomDecoder:class"
+]
+},
+"section_name": {
+"default": {
+"attribute": "default_attribute",
+"prop": "default_prop",
+"prop_int": "0:int"
+},
+"my_id": {
+"attribute": "my_attribute",
+"prop_fct_list": [
+"tests.config.test_section_serialization.add:function"
+],
+"prop_class_list": [
+"tests.config.test_section_serialization.CustomClass:class"
+]
+}
+}
 }
     """.strip()
 
@@ -460,7 +458,6 @@ def test_read_write_json_configuration_file_with_function_and_class():
 
     Config.export(tf.filename)
     actual_exported_toml = tf.read().strip()
-    print(actual_exported_toml)
     assert actual_exported_toml == expected_json_config
 
     Config.load(tf.filename)
