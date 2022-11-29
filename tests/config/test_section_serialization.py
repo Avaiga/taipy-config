@@ -168,6 +168,9 @@ baz = "ENV[QUX]"
     ):
         Config.load(tf.filename)
 
+        assert Config.global_config.repository_properties is not None
+        assert Config.global_config.repository_properties.get("db_location") == "foo.db"
+
         assert Config.unique_sections is not None
         assert Config.unique_sections[UniqueSectionForTest.name] is not None
         assert Config.unique_sections[UniqueSectionForTest.name].attribute == "my_attribute"
@@ -209,6 +212,22 @@ baz = "ENV[QUX]"
         Config.export(tf2.filename)
         actual_config_2 = tf2.read().strip()
         assert actual_config_2 == toml_config
+
+
+def test_read_toml_configuration_file():
+    toml_config = """
+[TAIPY]
+root_folder = "./taipy/"
+storage_folder = ".data/"
+clean_entities_enabled = "True:bool"
+repository_type = "filesystem"
+    """.strip()
+
+    tf = NamedTemporaryFile(toml_config)
+    Config.load(tf.filename)
+
+    # Without serializing repository_properties, it should return an empty dict
+    assert Config.global_config.repository_properties == {}
 
 
 def test_read_write_toml_configuration_file_with_function_and_class():

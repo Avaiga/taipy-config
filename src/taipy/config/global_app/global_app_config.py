@@ -111,7 +111,11 @@ class GlobalAppConfig:
 
     @property
     def properties(self):
-        return {k: _tpl._replace_templates(v) for k, v in self._properties.items()}
+        return (
+            {k: _tpl._replace_templates(v) for k, v in self._properties.items()}
+            if self._repository_properties
+            else self._DEFAULT_REPOSITORY_PROPERTIES
+        )
 
     @properties.setter  # type: ignore
     @_ConfigBlocker._check()
