@@ -214,7 +214,7 @@ baz = "ENV[QUX]"
         assert actual_config_2 == toml_config
 
 
-def test_read_toml_configuration_file():
+def test_read_toml_configuration_file_without_repository_property():
     toml_config = """
 [TAIPY]
 root_folder = "./taipy/"
