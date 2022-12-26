@@ -15,7 +15,8 @@ import argparse
 class _Argparser:
     """Argument parser for Taipy application."""
 
-    parser = argparse.ArgumentParser()
+    # The conflict_handler is set to "resolve" to override conflict arguments
+    parser = argparse.ArgumentParser(conflict_handler="resolve")
 
     @classmethod
     def _add_groupparser(cls, title: str, description: str = ""):
