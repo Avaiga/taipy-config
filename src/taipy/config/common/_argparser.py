@@ -10,6 +10,7 @@
 # specific language governing permissions and limitations under the License.
 
 import argparse
+from typing import Dict
 
 
 class _Argparser:
@@ -18,13 +19,21 @@ class _Argparser:
     # The conflict_handler is set to "resolve" to override conflict arguments
     parser = argparse.ArgumentParser(conflict_handler="resolve")
 
+    arg_groups: Dict[str, argparse._ArgumentGroup] = {}
+
     @classmethod
-    def _add_groupparser(cls, title: str, description: str = ""):
+    def _add_groupparser(cls, title: str, description: str = "") -> argparse._ArgumentGroup:
         """Create a new group for arguments and return a argparser handle."""
-        return cls.parser.add_argument_group(title=title, description=description)
+
+        try:
+            return cls.arg_groups[title]
+        except KeyError:
+            arg_group = cls.parser.add_argument_group(title=title, description=description)
+            cls.arg_groups[title] = arg_group
+            return arg_group
 
     @classmethod
     def _parse(cls):
         """Parse and return only known arguments."""
-        args, unknown_args = cls.parser.parse_known_args()
+        args, _ = cls.parser.parse_known_args()
         return args
