@@ -25,15 +25,12 @@ class Config:
     @_Classproperty
     def unique_sections(cls) -> Dict[str, UniqueSection]:
         """Return all unique sections."""
-
     @_Classproperty
     def sections(cls) -> Dict[str, Dict[str, Section]]:
         """Return all non unique sections."""
-
     @_Classproperty
     def global_config(cls) -> GlobalAppConfig:
         """Return configuration values related to the global application as a `GlobalAppConfig^`."""
-
     @classmethod
     @_ConfigBlocker._check()
     def load(cls, filename):
@@ -41,7 +38,6 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     def export(cls, filename):
         """Export a configuration.
@@ -55,7 +51,6 @@ class Config:
         Note:
             If _filename_ already exists, it is overwritten.
         """
-
     @classmethod
     def backup(cls, filename):
         """Backup a configuration.
@@ -71,7 +66,6 @@ class Config:
         Note:
             If _filename_ already exists, it is overwritten.
         """
-
     @classmethod
     @_ConfigBlocker._check()
     def restore(cls, filename):
@@ -80,7 +74,6 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     @_ConfigBlocker._check()
     def override(cls, filename):
@@ -89,15 +82,12 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     def block_update(cls):
         """Block update on the configuration signgleton."""
-
     @classmethod
     def unblock_update(cls):
         """Unblock update on the configuration signgleton."""
-
     @classmethod
     def configure_global_app(
         cls,
@@ -495,7 +485,7 @@ class Config:
             `JobConfig^`: The job execution configuration.
         """
     @classmethod
-    def configure_pipeline(id: str, task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):
+    def configure_pipeline(id: str, task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):  # type: ignore
         """Configure a new pipeline configuration.
         Parameters:
             id (str): The unique identifier of the new pipeline configuration.
@@ -508,7 +498,7 @@ class Config:
             `PipelineConfig^`: The new pipeline configuration.
         """
     @classmethod
-    def configure_default_pipeline(task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):
+    def configure_default_pipeline(task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):  # type: ignore
         """Configure the default values for pipeline configurations.
         This function creates the _default pipeline configuration_ object,
         where all pipeline configuration objects will find their default
@@ -525,7 +515,7 @@ class Config:
     @classmethod
     def configure_scenario(
         id: str,
-        pipeline_configs: List[PipelineConfig],
+        pipeline_configs: List[PipelineConfig],  # type: ignore
         frequency: Optional[Frequency] = ...,
         comparators: Optional[Dict[str, Union[List[Callable], Callable]]] = ...,
         **properties: Dict[str, Any],
@@ -553,7 +543,7 @@ class Config:
         """
     @classmethod
     def configure_default_scenario(
-        pipeline_configs: List[PipelineConfig],
+        pipeline_configs: List[PipelineConfig],  # type: ignore
         frequency: Optional[Frequency] = ...,
         comparators: Optional[Dict[str, Union[List[Callable], Callable]]] = ...,
         **properties: Dict[str, Any],
@@ -584,7 +574,7 @@ class Config:
     @classmethod
     def configure_scenario_from_tasks(
         id: str,
-        task_configs: List[TaskConfig],
+        task_configs: List[TaskConfig],  # type: ignore
         frequency: Optional[Frequency] = ...,
         comparators: Optional[Dict[str, Union[List[Callable], Callable]]] = ...,
         pipeline_id: Optional[str] = ...,
@@ -620,8 +610,8 @@ class Config:
     def configure_task(
         id: str,
         function: Callable,
-        input: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,
-        output: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,
+        input: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,  # type: ignore
+        output: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,  # type: ignore
         **properties: Dict[str, Any],
     ):
         """Configure a new task configuration.
@@ -642,8 +632,8 @@ class Config:
     @classmethod
     def configure_default_task(
         function: Callable,
-        input: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,
-        output: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,
+        input: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,  # type: ignore
+        output: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,  # type: ignore
         **properties: Dict[str, Any],
     ):
         """Configure the default values for task configurations.
