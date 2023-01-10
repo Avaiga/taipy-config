@@ -463,7 +463,7 @@ class Config:
         Returns:
             `DataNodeConfig^`: The new Generic data node configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_job_executions(
         mode: str = ...,
         nb_of_workers: Union[int, str] = ...,
@@ -484,7 +484,7 @@ class Config:
         Returns:
             `JobConfig^`: The job execution configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_pipeline(id: str, task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):  # type: ignore
         """Configure a new pipeline configuration.
         Parameters:
@@ -497,7 +497,7 @@ class Config:
         Returns:
             `PipelineConfig^`: The new pipeline configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_default_pipeline(task_configs: Union[TaskConfig, List[TaskConfig]], **properties: Dict[str, Any]):  # type: ignore
         """Configure the default values for pipeline configurations.
         This function creates the _default pipeline configuration_ object,
@@ -512,7 +512,7 @@ class Config:
         Returns:
             `PipelineConfig^`: The default pipeline configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_scenario(
         id: str,
         pipeline_configs: List[PipelineConfig],  # type: ignore
@@ -541,7 +541,7 @@ class Config:
         Returns:
             `ScenarioConfig^`: The new scenario configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_default_scenario(
         pipeline_configs: List[PipelineConfig],  # type: ignore
         frequency: Optional[Frequency] = ...,
@@ -571,7 +571,7 @@ class Config:
         Returns:
             `ScenarioConfig^`: The default scenario configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_scenario_from_tasks(
         id: str,
         task_configs: List[TaskConfig],  # type: ignore
@@ -606,7 +606,7 @@ class Config:
         Returns:
             `ScenarioConfig^`: The new scenario configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_task(
         id: str,
         function: Callable,
@@ -629,7 +629,7 @@ class Config:
         Returns:
             `TaskConfig^`: The new task configuration.
         """
-    @classmethod
+    @staticmethod
     def configure_default_task(
         function: Callable,
         input: Optional[Union[DataNodeConfig, List[DataNodeConfig]]] = ...,  # type: ignore
