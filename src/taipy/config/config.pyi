@@ -89,6 +89,14 @@ class Config:
     def unblock_update(cls):
         """Unblock update on the configuration signgleton."""
     @classmethod
+    @_ConfigBlocker._check()
+    def _register_default(cls, default_section: Section):
+        """"""
+    @classmethod
+    @_ConfigBlocker._check()
+    def _register(cls, section):
+        """"""
+    @classmethod
     def configure_global_app(
         cls,
         root_folder: str = ...,
