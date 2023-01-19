@@ -13,7 +13,7 @@ import inspect
 import re
 import types
 from abc import abstractmethod
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
 from . import Section
@@ -25,6 +25,16 @@ from .common.scope import Scope
 from .exceptions.exceptions import LoadingError
 from .global_app.global_app_config import GlobalAppConfig
 from .unique_section import UniqueSection
+
+
+def _timedelta_to_str(obj: timedelta) -> str:
+    total_seconds = obj.total_seconds()
+    return (
+        f"{int(total_seconds // 86400)}d"
+        f"{int(total_seconds % 86400 // 3600)}h"
+        f"{int(total_seconds % 3600 // 60)}m"
+        f"{int(total_seconds % 60)}s"
+    )
 
 
 class _BaseSerializer(object):
@@ -69,6 +79,8 @@ class _BaseSerializer(object):
             return str(as_dict) + ":float"
         if isinstance(as_dict, datetime):
             return as_dict.isoformat() + ":datetime"
+        if isinstance(as_dict, timedelta):
+            return _timedelta_to_str(as_dict) + ":timedelta"
         if inspect.isfunction(as_dict) or isinstance(as_dict, types.BuiltinFunctionType):
             return as_dict.__module__ + "." + as_dict.__name__ + ":function"
         if inspect.isclass(as_dict):
@@ -107,7 +119,7 @@ class _BaseSerializer(object):
         match = re.fullmatch(_TemplateHandler._PATTERN, str(val))
         if not match:
             if isinstance(val, str):
-                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bint\b|\bfloat\b|\bdatetime\b|\bfunction\b|\bclass\b|\bSCOPE\b|\bFREQUENCY\b|\bSECTION\b)?$"
+                TYPE_PATTERN = r"^(.+):(\bbool\b|\bstr\b|\bint\b|\bfloat\b|\bdatetime\b||\btimedelta\b|\bfunction\b|\bclass\b|\bSCOPE\b|\bFREQUENCY\b|\bSECTION\b)?$"
                 match = re.fullmatch(TYPE_PATTERN, str(val))
                 if match:
                     actual_val = match.group(1)
@@ -126,6 +138,8 @@ class _BaseSerializer(object):
                         return _TemplateHandler._to_float(actual_val)
                     elif dynamic_type == "datetime":
                         return _TemplateHandler._to_datetime(actual_val)
+                    elif dynamic_type == "timedelta":
+                        return _TemplateHandler._to_timedelta(actual_val)
                     elif dynamic_type == "function":
                         return _TemplateHandler._to_function(actual_val)
                     elif dynamic_type == "class":

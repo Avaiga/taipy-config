@@ -10,8 +10,11 @@
 # specific language governing permissions and limitations under the License.
 
 import json  # type: ignore
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any
 
-from ._base_serializer import _BaseSerializer
+from ._base_serializer import _BaseSerializer, _timedelta_to_str
 from ._config import _Config
 from .exceptions.exceptions import LoadingError
 
@@ -22,7 +25,9 @@ class _JsonSerializer(_BaseSerializer):
     @classmethod
     def _write(cls, configuration: _Config, filename: str):
         with open(filename, "w") as fd:
-            json.dump(cls._str(configuration), fd, ensure_ascii=False, indent=0, check_circular=False)
+            json.dump(
+                cls._str(configuration), fd, ensure_ascii=False, indent=0, check_circular=False, cls=_CustomEncoder
+            )
 
     @classmethod
     def _read(cls, filename: str) -> _Config:
@@ -36,8 +41,27 @@ class _JsonSerializer(_BaseSerializer):
 
     @classmethod
     def _serialize(cls, configuration: _Config) -> str:
-        return json.dumps(cls._str(configuration), ensure_ascii=False, indent=0, check_circular=False)
+        return json.dumps(
+            cls._str(configuration), ensure_ascii=False, indent=0, check_circular=False, cls=_CustomEncoder
+        )
 
     @classmethod
     def _deserialize(cls, config_as_string: str) -> _Config:
         return cls._from_dict(cls._pythonify(dict(json.loads(config_as_string))))
+
+
+class Json:
+    pass
+
+
+class _CustomEncoder(json.JSONEncoder):
+    def default(self, o: Any) -> Json:
+        if isinstance(o, Enum):
+            result = o.value
+        elif isinstance(o, datetime):
+            result = f"{o.isoformat()}:datetime"
+        elif isinstance(o, timedelta):
+            result = f"{_timedelta_to_str(o)}:timedelta"
+        else:
+            result = json.JSONEncoder.default(self, o)
+        return result
