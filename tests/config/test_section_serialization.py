@@ -65,7 +65,7 @@ attribute = "my_attribute"
 prop = "my_prop"
 prop_int = "1:int"
 prop_bool = "False:bool"
-prop_list = [ "p1", "1991-01-01T00:00:00:datetime",]
+prop_list = [ "p1", "1991-01-01T00:00:00:datetime", "1d0h0m0s:timedelta",]
 prop_scope = "SCENARIO:SCOPE"
 prop_freq = "QUARTERLY:FREQUENCY"
 baz = "ENV[QUX]"
@@ -95,7 +95,7 @@ baz = "ENV[QUX]"
             prop="my_prop",
             prop_int=1,
             prop_bool=False,
-            prop_list=["p1", datetime.datetime(1991, 1, 1)],
+            prop_list=["p1", datetime.datetime(1991, 1, 1), datetime.timedelta(days=1)],
             prop_scope=Scope.SCENARIO,
             prop_freq=Frequency.QUARTERLY,
             baz="ENV[QUX]",
@@ -130,7 +130,7 @@ attribute = "my_attribute"
 prop = "my_prop"
 prop_int = "1:int"
 prop_bool = "False:bool"
-prop_list = [ "p1", "1991-01-01T00:00:00:datetime",]
+prop_list = [ "p1", "1991-01-01T00:00:00:datetime", "1d0h0m0s:timedelta",]
 prop_scope = "SCENARIO:SCOPE"
 prop_freq = "QUARTERLY:FREQUENCY"
 baz = "ENV[QUX]"
@@ -168,7 +168,11 @@ baz = "ENV[QUX]"
         assert Config.unique_sections[UniqueSectionForTest.name].prop == "my_prop"
         assert Config.unique_sections[UniqueSectionForTest.name].prop_int == 1
         assert Config.unique_sections[UniqueSectionForTest.name].prop_bool is False
-        assert Config.unique_sections[UniqueSectionForTest.name].prop_list == ["p1", datetime.datetime(1991, 1, 1)]
+        assert Config.unique_sections[UniqueSectionForTest.name].prop_list == [
+            "p1",
+            datetime.datetime(1991, 1, 1),
+            datetime.timedelta(days=1),
+        ]
         assert Config.unique_sections[UniqueSectionForTest.name].prop_scope == Scope.SCENARIO
         assert Config.unique_sections[UniqueSectionForTest.name].prop_freq == Frequency.QUARTERLY
         assert Config.unique_sections[UniqueSectionForTest.name].baz == "qux"

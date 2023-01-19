@@ -27,16 +27,6 @@ from .global_app.global_app_config import GlobalAppConfig
 from .unique_section import UniqueSection
 
 
-def _timedelta_to_str(obj: timedelta) -> str:
-    total_seconds = obj.total_seconds()
-    return (
-        f"{int(total_seconds // 86400)}d"
-        f"{int(total_seconds % 86400 // 3600)}h"
-        f"{int(total_seconds % 3600 // 60)}m"
-        f"{int(total_seconds % 60)}s"
-    )
-
-
 class _BaseSerializer(object):
     """Base serializer class for taipy configuration."""
 
@@ -80,7 +70,7 @@ class _BaseSerializer(object):
         if isinstance(as_dict, datetime):
             return as_dict.isoformat() + ":datetime"
         if isinstance(as_dict, timedelta):
-            return _timedelta_to_str(as_dict) + ":timedelta"
+            return cls._timedelta_to_str(as_dict) + ":timedelta"
         if inspect.isfunction(as_dict) or isinstance(as_dict, types.BuiltinFunctionType):
             return as_dict.__module__ + "." + as_dict.__name__ + ":function"
         if inspect.isclass(as_dict):
@@ -154,3 +144,13 @@ class _BaseSerializer(object):
             if isinstance(val, list):
                 return [cls._pythonify(v) for v in val]
         return val
+
+    @classmethod
+    def _timedelta_to_str(cls, obj: timedelta) -> str:
+        total_seconds = obj.total_seconds()
+        return (
+            f"{int(total_seconds // 86400)}d"
+            f"{int(total_seconds % 86400 // 3600)}h"
+            f"{int(total_seconds % 3600 // 60)}m"
+            f"{int(total_seconds % 60)}s"
+        )
