@@ -102,8 +102,10 @@ working on it.
      pipenv run python -m pre-commit install
    ```
 
-4. Make the change and create a
-   [pull request from your fork](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork).
+4. Make the change. You can also add your GitHub login in a new line of the `contributors.txt` file. We are using
+it to list our contributors on our website and thank them.
+
+5. Create a [pull request from your fork](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork).
    Keep your pull request in __draft__ until your work is finished.
    Do not hesitate to add a comment for help or questions.
    Before you submit a pull request read to review from your forked repo, check that it meets these guidelines:
