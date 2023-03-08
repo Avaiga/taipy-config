@@ -28,3 +28,7 @@ class InvalidConfigurationId(Exception):
 
 class ConfigurationUpdateBlocked(Exception):
     """The configuration is being blocked from update by other Taipy services."""
+
+
+class ConflictedConfigurationError(Exception):
+    """There is conflicted between 2 _Config found by the _ConfigComparator."""
