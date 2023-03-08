@@ -138,24 +138,24 @@ class Config:
     @classmethod
     @_ConfigBlocker._check()
     def _register_default(cls, default_section: Section):
-		""""""
+        """"""
 
     @classmethod
     @_ConfigBlocker._check()
     def _register(cls, section):
-		""""""
+        """"""
 
     @classmethod
     def _override_env_file(cls):
-		""""""
+        """"""
 
     @classmethod
     def _to_json(cls, _config: _Config) -> str:
-		""""""
+        """"""
 
     @classmethod
     def _from_json(cls, config_as_str: str) -> _Config:
-		""""""
+        """"""
 
     @staticmethod
     def configure_scenario(
