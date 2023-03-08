@@ -453,10 +453,10 @@ class Config:
     def configure_generic_data_node(
         cls,
         id: str,
-        read_fct: Callable,
-        write_fct: Callable,
-        read_fct_params: Optional[List] = None,
-        write_fct_params: Optional[List] = None,
+        read_fct: Optional[Callable] = None,
+        write_fct: Optional[Callable] = None,
+        read_fct_args: Optional[List] = None,
+        write_fct_args: Optional[List] = None,
         scope: Optional[Scope] = None,
         **properties,
     ):
@@ -464,12 +464,12 @@ class Config:
 
         Parameters:
             id (str): The unique identifier of the new generic data node configuration.
-            read_fct (Callable): The Python function called to read the data.
-            write_fct (Callable): The Python function called to write the data.
+            read_fct (Optional[Callable]): The Python function called to read the data.
+            write_fct (Optional[Callable]): The Python function called to write the data.
                 The provided function must have at least one parameter that receives the data to be written.
-            read_fct_params (Optional[List]): The list of parameters that are passed to the _read_fct_
+            read_fct_args (Optional[List]): The list of arguments that are passed to the _read_fct_
                 to read data.
-            write_fct_params (Optional[List]): The list of parameters that are passed to the _write_fct_
+            write_fct_args (Optional[List]): The list of arguments that are passed to the _write_fct_
                 to write the data.
             scope (Optional[Scope^]): The scope of the Generic data node configuration.
                 The default value is `Scope.SCENARIO`.
