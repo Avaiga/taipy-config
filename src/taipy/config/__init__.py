@@ -35,7 +35,7 @@ __version__ = _get_version()
 
 
 def _config_doc(func):
-    def func_with_doc(section, attribute_name, default, configuration_methods):
+    def func_with_doc(section, attribute_name, default, configuration_methods, add_to_unconflicted_sections=False):
         if os.environ.get("GENERATING_TAIPY_DOC", None) and os.environ["GENERATING_TAIPY_DOC"] == "true":
             with open("config_doc.txt", "a") as f:
                 from inspect import signature
@@ -46,7 +46,7 @@ def _config_doc(func):
                     doc = '        """' + configuration_method.__doc__ + '"""\n'
                     content = "        pass\n\n"
                     f.write(annotation + sign + doc + content)
-        return func(section, attribute_name, default, configuration_methods)
+        return func(section, attribute_name, default, configuration_methods, add_to_unconflicted_sections)
 
     return func_with_doc
 
@@ -57,7 +57,7 @@ def _inject_section(
     attribute_name: str,
     default: Section,
     configuration_methods: List[tuple],
-    add_to_unconlicted_section: bool = False,
+    add_to_unconflicted_sections: bool = False,
 ):
     Config._register_default(default)
 
@@ -68,7 +68,7 @@ def _inject_section(
     else:
         raise TypeError
 
-    if add_to_unconlicted_section:
+    if add_to_unconflicted_sections:
         Config._comparator._add_unconflicted_section(section_clazz.name)
 
     for exposed_configuration_method, configuration_method in configuration_methods:
