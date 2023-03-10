@@ -18,31 +18,26 @@ from deepdiff import DeepDiff
 from ...logger._taipy_logger import _TaipyLogger
 from .._config import _Config
 from .._serializer._json_serializer import _JsonSerializer
-from ..exceptions.exceptions import ConflictedConfigurationError
 from ._comparator_result import _ComparatorResult
 
 
 class _ConfigComparator:
+    def __init__(self):
+        self._unconflicted_sections: Set[str] = set()
+        self.__logger = _TaipyLogger._get_logger()
 
-    _UNCONFLICTED_SECTIONS: Set[str] = set()
-
-    __logger = _TaipyLogger._get_logger()
-
-    @classmethod
-    def _add_unconflicted_section(cls, section_name: Union[str, Set[str]]):
+    def _add_unconflicted_section(self, section_name: Union[str, Set[str]]):
         if isinstance(section_name, str):
             section_name = {section_name}
 
-        cls._UNCONFLICTED_SECTIONS.update(section_name)
+        self._unconflicted_sections.update(section_name)
 
-    @classmethod
     def _compare(
-        cls,
+        self,
         old_config: _Config,
         new_config: _Config,
         old_version_number: Optional[str] = None,
         new_version_number: Optional[str] = None,
-        raise_error: bool = True,
     ):
         """Compare between 2 _Config object to check for compatibility.
 
@@ -51,10 +46,6 @@ class _ConfigComparator:
             new_config (_Config): The new _Config.
             old_version_number (str, optional): The old version number for logging. Defaults to None.
             new_version_number (str, optional): The new version number for logging. Defaults to None.
-            raise_error (bool, optional): Raise exception if there is error or not. Defaults to True.
-
-        Raises:
-            ConflictedConfigurationError: Raise if there is conflicted between the 2 _Config and raise_error is True.
 
         Returns:
             _ComparatorResult: Return a _ComparatorResult dictionary with the following format:
@@ -80,24 +71,19 @@ class _ConfigComparator:
 
         config_deepdiff = DeepDiff(old_json_config, new_json_config)
 
-        comparator_result = _ComparatorResult(copy(cls._UNCONFLICTED_SECTIONS))
+        comparator_result = _ComparatorResult(copy(self._unconflicted_sections))
 
         comparator_result._check_added_items(config_deepdiff, new_json_config)
         comparator_result._check_removed_items(config_deepdiff, old_json_config)
         comparator_result._check_modified_items(config_deepdiff, old_json_config, new_json_config)
         comparator_result._sort_by_section()
 
-        cls.__log_message(comparator_result, old_version_number, new_version_number)
-
-        if raise_error:
-            if comparator_result.get(_ComparatorResult.CONFLICTED_SECTION_KEY):
-                raise ConflictedConfigurationError
+        self.__log_message(comparator_result, old_version_number, new_version_number)
 
         return comparator_result
 
-    @classmethod
     def __log_message(
-        cls,
+        self,
         comparator_result: _ComparatorResult,
         old_version_number: Optional[str] = None,
         new_version_number: Optional[str] = None,
@@ -110,21 +96,20 @@ class _ConfigComparator:
         )
 
         if unconflicted_sections := comparator_result.get(_ComparatorResult.UNCONFLICTED_SECTION_KEY):
-            unconflicted_messages = cls.__get_messages(unconflicted_sections)
-            cls.__logger.info(
+            unconflicted_messages = self.__get_messages(unconflicted_sections)
+            self.__logger.info(
                 f"There are non-conflicting changes between the {old_config_str}"
                 f" and the {new_config_str}:\n\t" + "\n\t".join(unconflicted_messages)
             )
 
         if conflicted_sections := comparator_result.get(_ComparatorResult.CONFLICTED_SECTION_KEY):
-            conflicted_messages = cls.__get_messages(conflicted_sections)
-            cls.__logger.error(
+            conflicted_messages = self.__get_messages(conflicted_sections)
+            self.__logger.error(
                 f"The {old_config_str} is conflicted with the {new_config_str}:\n\t" + "\n\t".join(conflicted_messages)
             )
-            cls.__logger.error("To override these changes, run your application with --force option.")
+            self.__logger.error("To override these changes, run your application with --force option.")
 
-    @classmethod
-    def __get_messages(cls, diff_sections):
+    def __get_messages(self, diff_sections):
         dq = '"'
         messages = []
 

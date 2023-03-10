@@ -16,8 +16,6 @@ import pytest
 from src.taipy.config import Config
 from src.taipy.config._config import _Config
 from src.taipy.config._config_comparator._comparator_result import _ComparatorResult
-from src.taipy.config._config_comparator._config_comparator import _ConfigComparator
-from src.taipy.config.exceptions.exceptions import ConflictedConfigurationError
 from src.taipy.config.global_app.global_app_config import GlobalAppConfig
 from tests.config.utils.section_for_tests import SectionForTest
 from tests.config.utils.unique_section_for_tests import UniqueSectionForTest
@@ -61,7 +59,7 @@ class TestConfigComparator:
             clean_entities_enabled=True,
         )
 
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         assert config_diff.get("unconflicted_sections") is None
         assert config_diff.get("conflicted_sections") is not None
@@ -96,7 +94,7 @@ class TestConfigComparator:
         # The first "section_name" is added to the Config
         _config_2 = _Config._default_config()
         _config_2._sections[SectionForTest.name] = {"section_1": self.section_1}
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["added_items"]) == 1
@@ -110,7 +108,7 @@ class TestConfigComparator:
         # A new "section_name" is added to the Config
         _config_3 = _Config._default_config()
         _config_3._sections[SectionForTest.name] = {"section_1": self.section_1, "section_2": self.section_2}
-        config_diff = Config._comparator._compare(_config_2, _config_3, raise_error=False)
+        config_diff = Config._comparator._compare(_config_2, _config_3)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["added_items"]) == 1
@@ -127,7 +125,7 @@ class TestConfigComparator:
         # All "section_name" sections are removed from the Config
         _config_2 = _Config._default_config()
         _config_2._sections[SectionForTest.name] = {"section_1": self.section_1}
-        config_diff = Config._comparator._compare(_config_2, _config_1, raise_error=False)
+        config_diff = Config._comparator._compare(_config_2, _config_1)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["removed_items"]) == 1
@@ -141,7 +139,7 @@ class TestConfigComparator:
         # Section "section_1" is removed from the Config
         _config_3 = _Config._default_config()
         _config_3._sections[SectionForTest.name] = {"section_1": self.section_1, "section_2": self.section_2}
-        config_diff = Config._comparator._compare(_config_3, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_3, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["removed_items"]) == 1
@@ -159,7 +157,7 @@ class TestConfigComparator:
         # All "section_name" sections are removed from the Config
         _config_2 = _Config._default_config()
         _config_2._sections[SectionForTest.name] = {"section_2": self.section_2b}
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["modified_items"]) == 2
@@ -181,7 +179,7 @@ class TestConfigComparator:
         # All "section_name" sections are removed from the Config
         _config_2 = _Config._default_config()
         _config_2._sections[SectionForTest.name] = {"section_3": self.section_3b}
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["modified_items"]) == 2
@@ -201,7 +199,7 @@ class TestConfigComparator:
 
         _config_2 = _Config._default_config()
         _config_2._unique_sections[UniqueSectionForTest.name] = self.unique_section_1
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["added_items"]) == 1
@@ -217,7 +215,7 @@ class TestConfigComparator:
 
         _config_2 = _Config._default_config()
         _config_2._unique_sections[UniqueSectionForTest.name] = self.unique_section_1
-        config_diff = Config._comparator._compare(_config_2, _config_1, raise_error=False)
+        config_diff = Config._comparator._compare(_config_2, _config_1)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["removed_items"]) == 1
@@ -235,7 +233,7 @@ class TestConfigComparator:
         # All "section_name" sections are removed from the Config
         _config_2 = _Config._default_config()
         _config_2._unique_sections[UniqueSectionForTest.name] = self.unique_section_1b
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         conflicted_config_diff = config_diff["conflicted_sections"]
         assert len(conflicted_config_diff["modified_items"]) == 1
@@ -247,14 +245,14 @@ class TestConfigComparator:
         assert conflicted_config_diff.get("added_items") is None
 
     def test_unconflicted_section_name_store_statically(self):
-        _ConfigComparator._add_unconflicted_section("section_name_1")
-        assert _ConfigComparator._UNCONFLICTED_SECTIONS == {"section_name_1"}
+        Config._comparator._add_unconflicted_section("section_name_1")
+        assert Config._comparator._unconflicted_sections == {"section_name_1"}
 
-        _ConfigComparator._add_unconflicted_section("section_name_2")
-        assert _ConfigComparator._UNCONFLICTED_SECTIONS == {"section_name_1", "section_name_2"}
+        Config._comparator._add_unconflicted_section("section_name_2")
+        assert Config._comparator._unconflicted_sections == {"section_name_1", "section_name_2"}
 
-        _ConfigComparator._add_unconflicted_section("section_name_1")
-        assert _ConfigComparator._UNCONFLICTED_SECTIONS == {"section_name_1", "section_name_2"}
+        Config._comparator._add_unconflicted_section("section_name_1")
+        assert Config._comparator._unconflicted_sections == {"section_name_1", "section_name_2"}
 
     def test_unconflicted_diff_is_stored_separated_from_conflicted_ones(self):
         _config_1 = _Config._default_config()
@@ -266,44 +264,26 @@ class TestConfigComparator:
         _config_2._sections[SectionForTest.name] = {"section_2": self.section_2b}
 
         # Compare 2 Configuration
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        config_diff = Config._comparator._compare(_config_1, _config_2)
 
         assert config_diff.get("unconflicted_sections") is None
         assert config_diff.get("conflicted_sections") is not None
         assert len(config_diff["conflicted_sections"]["modified_items"]) == 3
 
         # Ignore any diff of "section_name" and compare
-        _ConfigComparator._add_unconflicted_section("section_name")
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        Config._comparator._add_unconflicted_section("section_name")
+        config_diff = Config._comparator._compare(_config_1, _config_2)
         assert config_diff.get("unconflicted_sections") is not None
         assert len(config_diff["unconflicted_sections"]["modified_items"]) == 2
         assert config_diff.get("conflicted_sections") is not None
         assert len(config_diff["conflicted_sections"]["modified_items"]) == 1
 
         # Ignore any diff of Global Config and compare
-        _ConfigComparator._add_unconflicted_section(["unique_section_name"])
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
+        Config._comparator._add_unconflicted_section(["unique_section_name"])
+        config_diff = Config._comparator._compare(_config_1, _config_2)
         assert config_diff.get("unconflicted_sections") is not None
         assert len(config_diff["unconflicted_sections"]["modified_items"]) == 3
         assert config_diff.get("conflicted_sections") is None
-
-    def test_raise_error_param(self):
-        _config_1 = _Config._default_config()
-        _config_2 = _Config._default_config()
-
-        Config._comparator._compare(_config_1, _config_2)
-
-        _config_2._sections[SectionForTest.name] = {"section_1": self.section_1}
-        with pytest.raises(ConflictedConfigurationError):
-            Config._comparator._compare(_config_1, _config_2, raise_error=True)
-
-        # There is an error but no error raise due to raise_error=False
-        config_diff = Config._comparator._compare(_config_1, _config_2, raise_error=False)
-        assert config_diff.get("conflicted_sections") is not None
-
-        _ConfigComparator._add_unconflicted_section("section_name")
-        # No error raised since there is no conflict
-        Config._comparator._compare(_config_1, _config_2)
 
     def test_comparator_log_message(self, caplog):
         _config_1 = _Config._default_config()
@@ -315,9 +295,8 @@ class TestConfigComparator:
         _config_2._sections[SectionForTest.name] = {"section_2": self.section_2b}
 
         # Ignore any diff of "section_name" and compare
-        _ConfigComparator._add_unconflicted_section("section_name")
-        with pytest.raises(ConflictedConfigurationError):
-            Config._comparator._compare(_config_1, _config_2)
+        Config._comparator._add_unconflicted_section("section_name")
+        Config._comparator._compare(_config_1, _config_2)
 
         error_messages = caplog.text.strip().split("\n")
         assert len(error_messages) == 6
@@ -348,12 +327,7 @@ class TestConfigComparator:
 
         caplog.clear()
 
-        with pytest.raises(ConflictedConfigurationError):
-            Config._comparator._compare(
-                _config_1,
-                _config_2,
-                old_version_number="1.0",
-            )
+        Config._comparator._compare(_config_1, _config_2, old_version_number="1.0")
 
         error_messages = caplog.text.strip().split("\n")
         assert len(error_messages) == 6
@@ -374,13 +348,12 @@ class TestConfigComparator:
 
         caplog.clear()
 
-        with pytest.raises(ConflictedConfigurationError):
-            Config._comparator._compare(
-                _config_1,
-                _config_2,
-                old_version_number="1.0",
-                new_version_number="2.0",
-            )
+        Config._comparator._compare(
+            _config_1,
+            _config_2,
+            old_version_number="1.0",
+            new_version_number="2.0",
+        )
 
         error_messages = caplog.text.strip().split("\n")
         assert len(error_messages) == 6

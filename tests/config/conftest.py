@@ -36,7 +36,6 @@ def reset_configuration_singleton():
     Config._applied_config = _Config._default_config()
     Config._collector = IssueCollector()
     Config._serializer = _TomlSerializer()
-    _ConfigComparator._UNCONFLICTED_SECTIONS = set()
     Config._comparator = _ConfigComparator()
 
 
