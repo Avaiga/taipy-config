@@ -35,9 +35,12 @@ class IssueCollector:
         self._infos: List[Issue] = []
 
     def _update(self, collector):
-        self._errors.append(collector._errors)
-        self._warnings.append(collector._warnings)
-        self._infos.append(collector._infos)
+        if collector._errors:
+            self._errors.extend(collector._errors)
+        if collector._warnings:
+            self._warnings.extend(collector._warnings)
+        if collector._infos:
+            self._infos.extend(collector._infos)
 
     @property
     def all(self) -> List[Issue]:
