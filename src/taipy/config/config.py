@@ -10,7 +10,7 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-from typing import Dict, Union
+from typing import Dict, Type, Union
 
 from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
@@ -18,6 +18,7 @@ from ._config_comparator._config_comparator import _ConfigComparator
 from ._serializer._json_serializer import _JsonSerializer
 from ._serializer._toml_serializer import _TomlSerializer
 from .checker._checker import _Checker
+from .checker._checkers._config_checker import _ConfigChecker
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
 from .common._config_blocker import _ConfigBlocker
@@ -175,9 +176,23 @@ class Config:
         Returns:
             Collector containing the info, warning and error issues.
         """
-        cls._collector = _Checker._check(cls._applied_config)
-        cls.__log_message(cls)
+        cls._collector = _Checker._check_all(cls._applied_config)
+        cls.__log_message(cls._collector)
         return cls._collector
+
+    @classmethod
+    def _check_one(cls, checker: Type[_ConfigChecker]) -> IssueCollector:
+        """Check configuration using one checker.
+
+        This method logs issue messages and returns an issue collector, and update the Config issue collector.
+
+        Returns:
+            Collector containing the info, warning, and error issues.
+        """
+        collector = _Checker._check(cls._applied_config, checker)
+        cls._collector._update(collector)
+        cls.__log_message(collector)
+        return collector
 
     @classmethod
     @_ConfigBlocker._check()
@@ -237,14 +252,14 @@ class Config:
             cls._applied_config._update(cls._env_file_config)
 
     @classmethod
-    def __log_message(cls, config):
-        for issue in config._collector._warnings:
+    def __log_message(cls, collector):
+        for issue in collector._warnings:
             cls.__logger.warning(str(issue))
-        for issue in config._collector._infos:
+        for issue in collector._infos:
             cls.__logger.info(str(issue))
-        for issue in config._collector._errors:
+        for issue in collector._errors:
             cls.__logger.error(str(issue))
-        if len(config._collector._errors) != 0:
+        if len(collector._errors) != 0:
             raise SystemExit("Configuration errors found. Please check the error log for more information.")
 
     @classmethod

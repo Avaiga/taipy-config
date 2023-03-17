@@ -70,6 +70,20 @@ class TestChecker:
             assert expected_error_message in caplog.text
             assert len(Config._collector.errors) == 1
 
+    def test_check_one(self):
+        Config.global_config.clean_entities_enabled = "foo"
+        with pytest.raises(SystemExit):
+            Config.check()
+        assert len(Config._collector.errors) == 1
+        assert len(Config._collector.warnings) == 0
+        assert len(Config._collector.infos) == 0
+
+        with pytest.raises(SystemExit):
+            Config._check_one(CheckerForTest)
+        assert len(Config._collector.errors) == 2
+        assert len(Config._collector.warnings) == 1
+        assert len(Config._collector.infos) == 1
+
     def test_register_checker(self):
         checker = CheckerForTest
         checker._check = MagicMock()
