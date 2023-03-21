@@ -11,6 +11,7 @@
 
 from typing import Any, List
 
+from ...logger._taipy_logger import _TaipyLogger
 from .issue import Issue
 
 
@@ -33,14 +34,7 @@ class IssueCollector:
         self._errors: List[Issue] = []
         self._warnings: List[Issue] = []
         self._infos: List[Issue] = []
-
-    def _update(self, collector):
-        if collector._errors:
-            self._errors.extend(collector._errors)
-        if collector._warnings:
-            self._warnings.extend(collector._warnings)
-        if collector._infos:
-            self._infos.extend(collector._infos)
+        self.__logger = _TaipyLogger._get_logger()
 
     @property
     def all(self) -> List[Issue]:
@@ -59,10 +53,16 @@ class IssueCollector:
         return self._errors
 
     def _add_error(self, field: str, value: Any, message: str, checker_name: str):
-        self._errors.append(Issue(self._ERROR_LEVEL, field, value, message, checker_name))
+        issue = Issue(self._ERROR_LEVEL, field, value, message, checker_name)
+        self._errors.append(issue)
+        self.__logger.error(str(issue))
 
     def _add_warning(self, field: str, value: Any, message: str, checker_name: str):
-        self._warnings.append(Issue(self._WARNING_LEVEL, field, value, message, checker_name))
+        issue = Issue(self._WARNING_LEVEL, field, value, message, checker_name)
+        self._warnings.append(issue)
+        self.__logger.warning(str(issue))
 
     def _add_info(self, field: str, value: Any, message: str, checker_name: str):
-        self._infos.append(Issue(self._INFO_LEVEL, field, value, message, checker_name))
+        issue = Issue(self._INFO_LEVEL, field, value, message, checker_name)
+        self._infos.append(issue)
+        self.__logger.info(str(issue))

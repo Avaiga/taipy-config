@@ -176,7 +176,8 @@ class Config:
             Collector containing the info, warning and error issues.
         """
         cls._collector = _Checker._check(cls._applied_config)
-        cls.__log_message(cls._collector)
+        if len(cls._collector._errors) != 0:
+            raise SystemExit("Configuration errors found. Please check the error log for more information.")
         return cls._collector
 
     @classmethod
@@ -235,17 +236,6 @@ class Config:
             cls._applied_config._update(cls._file_config)
         if cls._env_file_config:
             cls._applied_config._update(cls._env_file_config)
-
-    @classmethod
-    def __log_message(cls, collector):
-        for issue in collector._warnings:
-            cls.__logger.warning(str(issue))
-        for issue in collector._infos:
-            cls.__logger.info(str(issue))
-        for issue in collector._errors:
-            cls.__logger.error(str(issue))
-        if len(collector._errors) != 0:
-            raise SystemExit("Configuration errors found. Please check the error log for more information.")
 
     @classmethod
     def _to_json(cls, _config: _Config) -> str:
