@@ -15,7 +15,4 @@ from src.taipy.config.checker._checkers._config_checker import _ConfigChecker
 
 class CheckerForTest(_ConfigChecker):
     def _check(self) -> IssueCollector:
-        self._info("info_field", "info_value", "info_message")
-        self._warning("warning_field", "warning_value", "warning_message")
-        self._error("error_field", "error_value", "error_message")
         return self._collector

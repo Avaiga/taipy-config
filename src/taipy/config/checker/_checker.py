@@ -20,19 +20,13 @@ from .issue_collector import IssueCollector
 class _Checker:
     """Holds the various checkers to perform on the config."""
 
-    _checkers: List[Type[_ConfigChecker]] = [_GlobalConfigChecker]  # type: ignore
+    _checkers: List[Type[_ConfigChecker]] = [_GlobalConfigChecker]
 
     @classmethod
-    def _check_all(cls, _config: _Config):
+    def _check(cls, _config: _Config):
         collector = IssueCollector()
         for checker in cls._checkers:
             checker(_config, collector)._check()
-        return collector
-
-    @classmethod
-    def _check(cls, _config: _Config, checker: Type[_ConfigChecker]):
-        collector = IssueCollector()
-        checker(_config, collector)._check()
         return collector
 
     @classmethod
