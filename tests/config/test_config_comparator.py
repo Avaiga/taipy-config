@@ -353,23 +353,14 @@ class TestConfigComparator:
             _config_2,
             old_version_number="1.0",
             new_version_number="2.0",
+            mode="comparison",
         )
 
         error_messages = caplog.text.strip().split("\n")
-        assert len(error_messages) == 6
+        assert len(error_messages) == 3
         assert all(
             t in error_messages[0]
-            for t in [
-                "INFO",
-                "There are non-conflicting changes between the version 1.0 Configuration and the version 2.0 Configuration:",
-            ]
-        )
-        assert all(
-            t in error_messages[3]
-            for t in [
-                "ERROR",
-                "The version 1.0 Configuration is conflicted with the version 2.0 Configuration:",
-            ]
+            for t in ["INFO", "Differences between version 1.0 Configuration and version 2.0 Configuration:"]
         )
 
         caplog.clear()
