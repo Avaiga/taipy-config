@@ -32,13 +32,12 @@ class _ConfigComparator:
 
         self._unconflicted_sections.update(section_name)
 
-    def _compare(
+    def _find_conflict_config(
         self,
         old_config: _Config,
         new_config: _Config,
         old_version_number: Optional[str] = None,
         new_version_number: Optional[str] = None,
-        mode: str = "conflict",
     ):
         """Compare between 2 _Config object to check for compatibility.
 
@@ -47,8 +46,6 @@ class _ConfigComparator:
             new_config (_Config): The new _Config.
             old_version_number (str, optional): The old version number for logging. Defaults to None.
             new_version_number (str, optional): The new version number for logging. Defaults to None.
-            mode (str): The comparison mode. By default, the "conflict" mode is set to find conflicts
-                between versions. A "comparison" mode is also available.
 
         Returns:
             _ComparatorResult: Return a _ComparatorResult dictionary with the following format:
@@ -69,26 +66,68 @@ class _ConfigComparator:
         }
         ```
         """
-        old_json_config = json.loads(_JsonSerializer._serialize(old_config))
-        new_json_config = json.loads(_JsonSerializer._serialize(new_config))
+        comparator_result = self.__get_config_diff(old_config, new_config)
+        self.__log_find_conflict_message(comparator_result, old_version_number, new_version_number)
+        return comparator_result
 
-        config_deepdiff = DeepDiff(old_json_config, new_json_config)
+    def _compare(
+        self,
+        config_1: _Config,
+        config_2: _Config,
+        version_number_1: str,
+        version_number_2: str,
+    ):
+        """Compare between 2 _Config object to check for compatibility.
 
-        comparator_result = _ComparatorResult(copy(self._unconflicted_sections))
-
-        comparator_result._check_added_items(config_deepdiff, new_json_config)
-        comparator_result._check_removed_items(config_deepdiff, old_json_config)
-        comparator_result._check_modified_items(config_deepdiff, old_json_config, new_json_config)
-        comparator_result._sort_by_section()
-
-        self.__log_message(comparator_result, mode, old_version_number, new_version_number)
+        Args:
+            config_1 (_Config): The old _Config.
+            config_2 (_Config): The new _Config.
+            version_number_1 (str): The old version number for logging.
+            version_number_2 (str): The new version number for logging.
+        """
+        comparator_result = self.__get_config_diff(config_1, config_2)
+        self.__log_comparison_message(comparator_result, version_number_1, version_number_2)
 
         return comparator_result
 
-    def __log_message(
+    def __get_config_diff(self, config_1, config_2):
+        json_config_1 = json.loads(_JsonSerializer._serialize(config_1))
+        json_config_2 = json.loads(_JsonSerializer._serialize(config_2))
+
+        config_deepdiff = DeepDiff(json_config_1, json_config_2)
+
+        comparator_result = _ComparatorResult(copy(self._unconflicted_sections))
+
+        comparator_result._check_added_items(config_deepdiff, json_config_2)
+        comparator_result._check_removed_items(config_deepdiff, json_config_1)
+        comparator_result._check_modified_items(config_deepdiff, json_config_1, json_config_2)
+        comparator_result._sort_by_section()
+
+        return comparator_result
+
+    def __log_comparison_message(
         self,
         comparator_result: _ComparatorResult,
-        mode: str,
+        version_number_1: str,
+        version_number_2: str,
+    ):
+        config_str_1 = f"version {version_number_1} Configuration"
+        config_str_2 = f"version {version_number_2} Configuration"
+
+        diff_messages = []
+        for _, sections in comparator_result.items():
+            diff_messages = self.__get_messages(sections)
+
+        if diff_messages:
+            self.__logger.info(
+                f"Differences between {config_str_1} and {config_str_2}:\n\t" + "\n\t".join(diff_messages)
+            )
+        else:
+            self.__logger.info(f"There is no difference between {config_str_1} and {config_str_2}.")
+
+    def __log_find_conflict_message(
+        self,
+        comparator_result: _ComparatorResult,
         old_version_number: Optional[str] = None,
         new_version_number: Optional[str] = None,
     ):
@@ -99,35 +138,21 @@ class _ConfigComparator:
             f"version {new_version_number} Configuration" if new_version_number else "current Configuration"
         )
 
-        if mode == "conflict":
-            if unconflicted_sections := comparator_result.get(_ComparatorResult.UNCONFLICTED_SECTION_KEY):
-                unconflicted_messages = self.__get_messages(unconflicted_sections)
-                self.__logger.info(
-                    f"There are non-conflicting changes between the {old_config_str}"
-                    f" and the {new_config_str}:\n\t" + "\n\t".join(unconflicted_messages)
-                )
+        if unconflicted_sections := comparator_result.get(_ComparatorResult.UNCONFLICTED_SECTION_KEY):
+            unconflicted_messages = self.__get_messages(unconflicted_sections)
+            self.__logger.info(
+                f"There are non-conflicting changes between the {old_config_str}"
+                f" and the {new_config_str}:\n\t" + "\n\t".join(unconflicted_messages)
+            )
 
-            if conflicted_sections := comparator_result.get(_ComparatorResult.CONFLICTED_SECTION_KEY):
-                conflicted_messages = self.__get_messages(conflicted_sections)
-                self.__logger.error(
-                    f"The {old_config_str} is conflicted with the {new_config_str}:\n\t"
-                    + "\n\t".join(conflicted_messages)
-                )
-                self.__logger.error(
-                    "To force running the application with the changes, run your application with --taipy-force option."
-                )
-
-        elif mode == "comparison":
-            diff_messages = []
-            for _, sections in comparator_result.items():
-                diff_messages = self.__get_messages(sections)
-
-            if diff_messages:
-                self.__logger.info(
-                    f"Differences between {old_config_str} and {new_config_str}:\n\t" + "\n\t".join(diff_messages)
-                )
-            else:
-                self.__logger.info(f"There is no difference between {old_config_str} and {new_config_str}.")
+        if conflicted_sections := comparator_result.get(_ComparatorResult.CONFLICTED_SECTION_KEY):
+            conflicted_messages = self.__get_messages(conflicted_sections)
+            self.__logger.error(
+                f"The {old_config_str} is conflicted with the {new_config_str}:\n\t" + "\n\t".join(conflicted_messages)
+            )
+            self.__logger.error(
+                "To force running the application with the changes, run your application with --taipy-force option."
+            )
 
     def __get_messages(self, diff_sections):
         dq = '"'
