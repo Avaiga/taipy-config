@@ -150,6 +150,10 @@ class Config:
         """"""
 
     @classmethod
+    def _compile_configs(cls):
+        """"""
+
+    @classmethod
     def _to_json(cls, _config: _Config) -> str:
         """"""
 
@@ -170,6 +174,9 @@ class Config:
         """"""
 
     def scenarios(cls) -> Dict[str, ScenarioConfig]:
+        """"""
+
+    def core(cls) -> Dict[str, CoreSection]:
         """"""
 
     @staticmethod
