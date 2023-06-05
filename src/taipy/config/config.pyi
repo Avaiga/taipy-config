@@ -150,6 +150,10 @@ class Config:
         """"""
 
     @classmethod
+    def _compile_configs(cls):
+        """"""
+
+    @classmethod
     def _to_json(cls, _config: _Config) -> str:
         """"""
 
