@@ -41,7 +41,9 @@ class Config:
     @classmethod
     @_ConfigBlocker._check()
     def load(cls, filename):
-        """Load a configuration file to replace the current python config and trigger the Config compilation.
+        """Load a configuration file.
+
+        The current Python configuration is replaced and the Config compilation is triggered.
 
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
@@ -53,12 +55,12 @@ class Config:
 
         The export is done in a toml file.
 
-        The exported configuration is taken from the python code configuration.
+        The exported configuration is taken from the Python code configuration.
 
         Parameters:
             filename (Union[str, Path]): The path of the file to export.
         Note:
-            If _filename_ already exists, it is overwritten.
+            If *filename* already exists, it is overwritten.
         """
 
     @classmethod
@@ -68,13 +70,13 @@ class Config:
         The backup is done in a toml file.
 
         The backed up configuration is a compilation from the three possible methods to configure
-        the application: the python code configuration, the file configuration and the environment
+        the application: the Python code configuration, the file configuration and the environment
         configuration.
 
         Parameters:
             filename (Union[str, Path]): The path of the file to export.
         Note:
-            If _filename_ already exists, it is overwritten.
+            If *filename* already exists, it is overwritten.
         """
 
     @classmethod
@@ -313,7 +315,9 @@ class Config:
         """
 
     @staticmethod
-    def configure_default_data_node(storage_type: str, scope: Optional[Scope] = None, **properties) -> "DataNodeConfig":
+    def configure_default_data_node(
+        storage_type: str, scope: Optional[Scope] = None, validity_period: Optional[timedelta] = None, **properties
+    ) -> "DataNodeConfig":
         """Configure the default values for data node configurations.
 
         This function creates the _default data node configuration_ object,
@@ -327,6 +331,11 @@ class Config:
                 *"generic"*.
             scope (Optional[Scope^]): The default scope for all data node configurations.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -335,7 +344,12 @@ class Config:
 
     @classmethod
     def configure_data_node(
-        cls, id: str, storage_type: Optional[str] = None, scope: Optional[Scope] = None, **properties
+        cls,
+        id: str,
+        storage_type: Optional[str] = None,
+        scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
+        **properties,
     ) -> "DataNodeConfig":
         """Configure a new data node configuration.
 
@@ -350,6 +364,11 @@ class Config:
             scope (Optional[Scope^]): The scope of the data node configuration.<br/>
                 The default value is `Scope.SCENARIO` (or the one specified in
                 `(Config.)configure_default_data_node()^`).
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -364,6 +383,7 @@ class Config:
         has_header: Optional[bool] = None,
         exposed_type: Optional[str] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new CSV data node configuration.
@@ -376,6 +396,11 @@ class Config:
                 The default value is `pandas`.
             scope (Optional[Scope^]): The scope of the CSV data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -390,6 +415,7 @@ class Config:
         encoder: Optional[json.JSONEncoder] = None,
         decoder: Optional[json.JSONDecoder] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new JSON data node configuration.
@@ -401,6 +427,11 @@ class Config:
             decoder (Optional[json.JSONDecoder]): The JSON decoder used to read data from the JSON file.
             scope (Optional[Scope^]): The scope of the JSON data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
         Returns:
             The new JSON data node configuration.
@@ -417,6 +448,7 @@ class Config:
         write_kwargs: Optional[Dict] = None,
         exposed_type: Optional[str] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new Parquet data node configuration.
@@ -439,6 +471,11 @@ class Config:
                 The default value is `pandas`.
             scope (Optional[Scope^]): The scope of the Parquet data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -454,6 +491,7 @@ class Config:
         sheet_name: Optional[Union[List[str], str]] = None,
         exposed_type: Optional[str] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new Excel data node configuration.
@@ -468,6 +506,11 @@ class Config:
                 The default value is `pandas`.
             scope (Optional[Scope^]): The scope of the Excel data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -483,6 +526,7 @@ class Config:
         read_fct_args: Optional[List] = None,
         write_fct_args: Optional[List] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new generic data node configuration.
@@ -498,6 +542,11 @@ class Config:
                 *write_fct* to write the data.
             scope (Optional[Scope^]): The scope of the Generic data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
         Returns:
             The new Generic data node configuration.
@@ -505,7 +554,12 @@ class Config:
 
     @classmethod
     def configure_in_memory_data_node(
-        cls, id: str, default_data: Optional[Any] = None, scope: Optional[Scope] = None, **properties
+        cls,
+        id: str,
+        default_data: Optional[Any] = None,
+        scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
+        **properties,
     ) -> "DataNodeConfig":
         """Configure a new *in-memory* data node configuration.
 
@@ -515,6 +569,11 @@ class Config:
                 this in_memory data node configuration.
             scope (Optional[Scope^]): The scope of the in_memory data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -528,6 +587,7 @@ class Config:
         default_path: Optional[str] = None,
         default_data: Optional[Any] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new pickle data node configuration.
@@ -539,6 +599,11 @@ class Config:
                 this pickle data node configuration.
             scope (Optional[Scope^]): The scope of the pickle data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -562,6 +627,7 @@ class Config:
         db_extra_args: Optional[Dict[str, Any]] = None,
         exposed_type: Optional[str] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new SQL table data node configuration.
@@ -591,6 +657,11 @@ class Config:
                 The default value is "pandas".
             scope (Optional[Scope^]): The scope of the SQL data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -615,6 +686,7 @@ class Config:
         db_extra_args: Optional[Dict[str, Any]] = None,
         exposed_type: Optional[str] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new SQL data node configuration.
@@ -646,6 +718,11 @@ class Config:
                 The default value is "pandas".
             scope (Optional[Scope^]): The scope of the SQL data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
         Returns:
             The new SQL data node configuration.
@@ -664,6 +741,7 @@ class Config:
         db_port: Optional[int] = None,
         db_extra_args: Optional[Dict[str, Any]] = None,
         scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
         **properties,
     ) -> "DataNodeConfig":
         """Configure a new Mongo collection data node configuration.
@@ -687,6 +765,11 @@ class Config:
                 into database connection string.
             scope (Optional[Scope^]): The scope of the Mongo collection data node configuration.<br/>
                 The default value is `Scope.SCENARIO`.
+            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
+                considered up-to-date. Once the validity period has passed, the data node is considered stale and
+                relevant tasks will run even if they are skippable (see the
+                [Task configs page](../core/config/task-config.md) for more details).
+                If *validity_period* is set to None, the data node is always up-to-date.
             **properties (dict[str, any]): A keyworded variable length list of additional arguments.
 
         Returns:
@@ -755,7 +838,10 @@ class Config:
 
     @staticmethod
     def configure_job_executions(
-        mode: str = None, nb_of_workers: Union[int, str] = None, max_nb_of_workers: Union[int, str] = None, **properties
+        mode: Optional[str] = None,
+        nb_of_workers: Optional[Union[int, str]] = None,
+        max_nb_of_workers: Optional[Union[int, str]] = None,
+        **properties
     ) -> "JobConfig":
         """Configure job execution.
 
