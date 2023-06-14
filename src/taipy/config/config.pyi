@@ -12,7 +12,13 @@
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from taipy.core.config import DataNodeConfig, JobConfig, PipelineConfig, ScenarioConfig, TaskConfig
+from taipy.core.config import (
+    DataNodeConfig,
+    JobConfig,
+    PipelineConfig,
+    ScenarioConfig,
+    TaskConfig,
+)
 
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
@@ -23,21 +29,18 @@ from .global_app.global_app_config import GlobalAppConfig
 from .section import Section
 from .unique_section import UniqueSection
 
-
 class Config:
     """Configuration singleton."""
+
     @_Classproperty
     def unique_sections(cls) -> Dict[str, UniqueSection]:
         """Return all unique sections."""
-
     @_Classproperty
     def sections(cls) -> Dict[str, Dict[str, Section]]:
         """Return all non unique sections."""
-
     @_Classproperty
     def global_config(cls) -> GlobalAppConfig:
         """Return configuration values related to the global application as a `GlobalAppConfig^`."""
-
     @classmethod
     @_ConfigBlocker._check()
     def load(cls, filename):
@@ -48,7 +51,6 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     def export(cls, filename):
         """Export a configuration.
@@ -62,7 +64,6 @@ class Config:
         Note:
             If *filename* already exists, it is overwritten.
         """
-
     @classmethod
     def backup(cls, filename):
         """Backup a configuration.
@@ -78,7 +79,6 @@ class Config:
         Note:
             If *filename* already exists, it is overwritten.
         """
-
     @classmethod
     @_ConfigBlocker._check()
     def restore(cls, filename):
@@ -87,7 +87,6 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     @_ConfigBlocker._check()
     def override(cls, filename):
@@ -96,15 +95,12 @@ class Config:
         Parameters:
             filename (Union[str, Path]): The path of the toml configuration file to load.
         """
-
     @classmethod
     def block_update(cls):
         """Block update on the configuration signgleton."""
-
     @classmethod
     def unblock_update(cls):
         """Unblock update on the configuration signgleton."""
-
     @classmethod
     @_ConfigBlocker._check()
     def configure_global_app(
@@ -126,7 +122,6 @@ class Config:
         Returns:
             The global application configuration.
         """
-
     @classmethod
     def check(cls) -> IssueCollector:
         """Check configuration.
@@ -136,53 +131,42 @@ class Config:
         Returns:
             Collector containing the info, warning and error issues.
         """
-
     @classmethod
     @_ConfigBlocker._check()
     def _register_default(cls, default_section: Section):
         """"""
-
     @classmethod
     @_ConfigBlocker._check()
     def _register(cls, section):
         """"""
-
     @classmethod
     def _override_env_file(cls):
         """"""
-
     @classmethod
     def _compile_configs(cls):
         """"""
-
     @classmethod
     def _to_json(cls, _config: _Config) -> str:
         """"""
-
     @classmethod
     def _from_json(cls, config_as_str: str) -> _Config:
         """"""
-
     @classmethod
     @property
     def job_config(cls) -> JobConfig:
         """"""
-
     @classmethod
     @property
     def data_nodes(cls) -> Dict[str, DataNodeConfig]:
         """"""
-
     @classmethod
     @property
     def tasks(cls) -> Dict[str, TaskConfig]:
         """"""
-
     @classmethod
     @property
     def pipelines(cls) -> Dict[str, PipelineConfig]:
         """"""
-
     @classmethod
     @property
     def scenarios(cls) -> Dict[str, ScenarioConfig]:
@@ -191,7 +175,6 @@ class Config:
     @property
     def core(cls) -> Dict[str, CoreSection]:
         """"""
-
     @staticmethod
     def configure_scenario(
         id: str,
@@ -222,7 +205,6 @@ class Config:
         Returns:
             The new scenario configuration.
         """
-
     @staticmethod
     def configure_scenario_from_tasks(
         id: str,
@@ -259,7 +241,6 @@ class Config:
         Returns:
             The new scenario configuration.
         """
-
     @staticmethod
     def configure_default_scenario(
         pipeline_configs: List[PipelineConfig],
@@ -292,9 +273,10 @@ class Config:
         Returns:
             The new default scenario configuration.
         """
-
     @staticmethod
-    def configure_pipeline(id: str, task_configs: Union[TaskConfig, List[TaskConfig]], **properties) -> "PipelineConfig":
+    def configure_pipeline(
+        id: str, task_configs: Union[TaskConfig, List[TaskConfig]], **properties
+    ) -> "PipelineConfig":
         """Configure a new pipeline configuration.
 
         Parameters:
@@ -307,9 +289,10 @@ class Config:
         Returns:
             The new pipeline configuration.
         """
-
     @staticmethod
-    def configure_default_pipeline(task_configs: Union[TaskConfig, List[TaskConfig]], **properties) -> "PipelineConfig":
+    def configure_default_pipeline(
+        task_configs: Union[TaskConfig, List[TaskConfig]], **properties
+    ) -> "PipelineConfig":
         """Configure the default values for pipeline configurations.
 
         This function creates the *default pipeline configuration* object,
@@ -324,10 +307,12 @@ class Config:
         Returns:
             The default pipeline configuration.
         """
-
     @staticmethod
     def configure_default_data_node(
-        storage_type: str, scope: Optional[Scope] = None, validity_period: Optional[timedelta] = None, **properties
+        storage_type: str,
+        scope: Optional[Scope] = None,
+        validity_period: Optional[timedelta] = None,
+        **properties,
     ) -> "DataNodeConfig":
         """Configure the default values for data node configurations.
 
@@ -352,7 +337,6 @@ class Config:
         Returns:
             The default data node configuration.
         """
-
     @classmethod
     def configure_data_node(
         cls,
@@ -385,7 +369,6 @@ class Config:
         Returns:
             The new data node configuration.
         """
-
     @classmethod
     def configure_csv_data_node(
         cls,
@@ -417,7 +400,6 @@ class Config:
         Returns:
             The new CSV data node configuration.
         """
-
     @classmethod
     def configure_json_data_node(
         cls,
@@ -447,7 +429,6 @@ class Config:
         Returns:
             The new JSON data node configuration.
         """
-
     @classmethod
     def configure_parquet_data_node(
         cls,
@@ -492,7 +473,6 @@ class Config:
         Returns:
             The new Parquet data node configuration.
         """
-
     @classmethod
     def configure_excel_data_node(
         cls,
@@ -527,7 +507,6 @@ class Config:
         Returns:
             The new Excel data node configuration.
         """
-
     @classmethod
     def configure_generic_data_node(
         cls,
@@ -562,7 +541,6 @@ class Config:
         Returns:
             The new Generic data node configuration.
         """
-
     @classmethod
     def configure_in_memory_data_node(
         cls,
@@ -590,7 +568,6 @@ class Config:
         Returns:
             The new *in-memory* data node configuration.
         """
-
     @classmethod
     def configure_pickle_data_node(
         cls,
@@ -620,7 +597,6 @@ class Config:
         Returns:
             The new pickle data node configuration.
         """
-
     @classmethod
     def configure_sql_table_data_node(
         cls,
@@ -678,7 +654,6 @@ class Config:
         Returns:
             The new SQL data node configuration.
         """
-
     @classmethod
     def configure_sql_data_node(
         cls,
@@ -738,7 +713,6 @@ class Config:
         Returns:
             The new SQL data node configuration.
         """
-
     @classmethod
     def configure_mongo_collection_data_node(
         cls,
@@ -786,7 +760,6 @@ class Config:
         Returns:
             The new Mongo collection data node configuration.
         """
-
     @staticmethod
     def configure_task(
         id: str,
@@ -815,7 +788,6 @@ class Config:
         Returns:
             The new task configuration.
         """
-
     @staticmethod
     def configure_default_task(
         function,
@@ -846,13 +818,12 @@ class Config:
         Returns:
             The default task configuration.
         """
-
     @staticmethod
     def configure_job_executions(
         mode: Optional[str] = None,
         nb_of_workers: Optional[Union[int, str]] = None,
         max_nb_of_workers: Optional[Union[int, str]] = None,
-        **properties
+        **properties,
     ) -> "JobConfig":
         """Configure job execution.
 
@@ -871,4 +842,3 @@ class Config:
         Returns:
             The new job execution configuration.
         """
-
