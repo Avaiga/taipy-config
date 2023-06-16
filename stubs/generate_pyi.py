@@ -123,7 +123,7 @@ def _generate_acessors(base_pyi, property_map):
 
     for property, cls in property_map.items():
         return_template = f"Dict[str, {cls}]" if property != "job_config" else f"{cls}"
-        template = f'\tdef {property}(cls) -> {return_template}:\n\t\t""""""\n'.replace("\t", "    ")
+        template = f'\t@property\n\tdef {property}(cls) -> {return_template}:\n\t\t""""""\n'.replace("\t", "    ")
         base_pyi += template + "\n"
     return base_pyi
 
@@ -134,15 +134,15 @@ def _build_header(filename):
 
 
 if __name__ == "__main__":
-    header_file = "stubs/pyi_header.py"
-    config_init = Path("taipy-core/src/taipy/core/config/__init__.py")
-    base_config = "src/taipy/config/config.py"
+    header_file = "/Users/joaoandre/Projects/toptal/avaiga/taipy-config/stubs/pyi_header.py"
+    config_init = Path("/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/__init__.py")
+    base_config = "/Users/joaoandre/Projects/toptal/avaiga/taipy-config/src/taipy/config/config.py"
 
-    pipeline_filename = "taipy-core/src/taipy/core/config/pipeline_config.py"
-    dn_filename = "taipy-core/src/taipy/core/config/data_node_config.py"
-    job_filename = "taipy-core/src/taipy/core/config/job_config.py"
-    scenario_filename = "taipy-core/src/taipy/core/config/scenario_config.py"
-    task_filename = "taipy-core/src/taipy/core/config/task_config.py"
+    pipeline_filename = "/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/pipeline_config.py"
+    dn_filename = "/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/data_node_config.py"
+    job_filename = "/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/job_config.py"
+    scenario_filename = "/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/scenario_config.py"
+    task_filename = "/Users/joaoandre/Projects/toptal/avaiga/taipy-core/src/taipy/core/config/task_config.py"
 
     entities_map, property_map = _generate_entity_and_property_maps(config_init)
     pyi = _build_header(header_file)
