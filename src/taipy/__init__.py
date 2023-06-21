@@ -13,22 +13,22 @@ from importlib.util import find_spec
 
 if find_spec("taipy"):
     if find_spec("taipy.config"):
-        import taipy.config._init  # type: ignore
+        from taipy.config._init import *  # type: ignore
 
     if find_spec("taipy.gui"):
-        import taipy.gui._init  # type: ignore
+        from taipy.gui._init import *  # type: ignore
 
     if find_spec("taipy.core"):
-        import taipy.core._init  # type: ignore
+        from taipy.core._init import *  # type: ignore
 
     if find_spec("taipy.rest"):
-        import taipy.rest._init  # type: ignore
+        from taipy.rest._init import *  # type: ignore
 
     if find_spec("taipy.gui_core"):
-        import taipy.gui_core._init  # type: ignore
+        from taipy.gui_core._init import *  # type: ignore
 
     if find_spec("taipy.enterprise"):
-        import taipy.enterprise._init  # type: ignore
+        from taipy.enterprise._init import *  # type: ignore
 
     if find_spec("taipy._run"):
         from taipy._run import _run as run  # type: ignore
