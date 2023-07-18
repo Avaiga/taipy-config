@@ -152,25 +152,32 @@ class Config:
     def _from_json(cls, config_as_str: str) -> _Config:
         """"""
 
-    _Classproperty    def job_config(cls) -> JobConfig:
+    @_Classproperty
+    def job_config(cls) -> JobConfig:
         """"""
 
-    _Classproperty    def data_nodes(cls) -> Dict[str, DataNodeConfig]:
+    @_Classproperty
+    def data_nodes(cls) -> Dict[str, DataNodeConfig]:
         """"""
 
-    _Classproperty    def tasks(cls) -> Dict[str, TaskConfig]:
+    @_Classproperty
+    def tasks(cls) -> Dict[str, TaskConfig]:
         """"""
 
-    _Classproperty    def pipelines(cls) -> Dict[str, PipelineConfig]:
+    @_Classproperty
+    def pipelines(cls) -> Dict[str, PipelineConfig]:
         """"""
 
-    _Classproperty    def scenarios(cls) -> Dict[str, ScenarioConfig]:
+    @_Classproperty
+    def scenarios(cls) -> Dict[str, ScenarioConfig]:
         """"""
 
-    _Classproperty    def migration_functions(cls) -> Dict[str, MigrationConfig]:
+    @_Classproperty
+    def migration_functions(cls) -> Dict[str, MigrationConfig]:
         """"""
 
-    _Classproperty    def core(cls) -> Dict[str, CoreSection]:
+    @_Classproperty
+    def core(cls) -> Dict[str, CoreSection]:
         """"""
 
     @staticmethod
