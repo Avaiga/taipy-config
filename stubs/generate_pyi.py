@@ -135,7 +135,7 @@ def _generate_acessors(base_pyi, property_map):
     for property, cls in property_map.items():
         return_template = f"Dict[str, {cls}]" if property != "job_config" else f"{cls}"
         template = (
-            "\t_Classproperty"
+            "\t@_Classproperty\n"
             + f'\tdef {property}(cls) -> {return_template}:\n\t\t""""""\n'
         ).replace("\t", "    ")
         base_pyi += template + "\n"
