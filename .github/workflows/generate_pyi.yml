@@ -21,7 +21,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-versions }}
       - name: Clone taipy-core
-        run: git clone --single-branch --branch ${{ github.base_ref }} https://github.com/Avaiga/taipy-core.git
+        run: |
+          git clone --single-branch --branch ${{ github.base_ref }} https://github.com/Avaiga/taipy-core.git
+          cd taipy-core
+          git checkout release/2.4
+          cd ..
       - name: Generate config.pyi
         run: python stubs/generate_pyi.py
       - name: Remove taipy-core folder
