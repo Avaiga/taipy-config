@@ -256,30 +256,6 @@ class Config:
         comparators: Optional[Dict[str, Union[List[Callable], Callable]]] = None,
         **properties,
     ) -> "ScenarioConfig":
-        """Configure the default values for scenario configurations.
-
-        This function creates the *default scenario configuration* object,
-        where all scenario configuration objects will find their default
-        values when needed.
-
-        Parameters:
-            pipeline_configs (List[PipelineConfig^]): The list of pipeline configurations used
-                by this scenario configuration.
-            frequency (Optional[Frequency^]): The scenario frequency.
-                It corresponds to the recurrence of the scenarios instantiated from this
-                configuration. Based on this frequency each scenario will be attached to
-                the relevant cycle.
-            comparators (Optional[Dict[str, Union[List[Callable], Callable]]]): The list of
-                functions used to compare scenarios. A comparator function is attached to a
-                scenario's data node configuration. The key of the dictionary parameter
-                corresponds to the data node configuration id. During the scenarios'
-                comparison, each comparator is applied to all the data nodes instantiated from
-                the data node configuration attached to the comparator. See
-                `taipy.compare_scenarios()^` more more details.
-            **properties (dict[str, any]): A keyworded variable length list of additional arguments.
-
-        Returns:
-            The new default scenario configuration.
         """
 
     @staticmethod
@@ -299,47 +275,12 @@ class Config:
 
     @staticmethod
     def configure_default_pipeline(task_configs: Union[TaskConfig, List[TaskConfig]], **properties) -> "PipelineConfig":
-        """Configure the default values for pipeline configurations.
-
-        This function creates the *default pipeline configuration* object,
-        where all pipeline configuration objects will find their default
-        values when needed.
-
-        Parameters:
-            task_configs (Union[TaskConfig^, List[TaskConfig^]]): The list of the task
-                configurations that make the default pipeline configuration. This can be
-                a single task configuration object is this pipeline holds a single task.
-            **properties (dict[str, any]): A keyworded variable length list of additional arguments.
-        Returns:
-            The default pipeline configuration.
         """
 
     @staticmethod
     def configure_default_data_node(
         storage_type: str, scope: Optional[Scope] = None, validity_period: Optional[timedelta] = None, **properties
     ) -> "DataNodeConfig":
-        """Configure the default values for data node configurations.
-
-        This function creates the _default data node configuration_ object,
-        where all data node configuration objects will find their default
-        values when needed.
-
-        Parameters:
-            storage_type (str): The default storage type for all data node configurations.
-                The possible values are *"pickle"* (the default value), *"csv"*, *"excel"*,
-                *"sql"*, *"mongo_collection"*, *"in_memory"*, *"json"*, *"parquet"* or
-                *"generic"*.
-            scope (Optional[Scope^]): The default scope for all data node configurations.<br/>
-                The default value is `Scope.SCENARIO`.
-            validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
-                considered up-to-date. Once the validity period has passed, the data node is considered stale and
-                relevant tasks will run even if they are skippable (see the
-                [Task configs page](../core/config/task-config.md) for more details).
-                If *validity_period* is set to None, the data node is always up-to-date.
-            **properties (dict[str, any]): A keyworded variable length list of additional arguments.
-
-        Returns:
-            The default data node configuration.
         """
 
     @classmethod
@@ -358,12 +299,12 @@ class Config:
             storage_type (Optional[str]): The data node configuration storage type. The possible values
                 are None (which is the default value of *"pickle"*, unless it has been overloaded by the
                 *storage_type* value set in the default data node configuration
-                (see `(Config.)configure_default_data_node()^`)), *"pickle"*, *"csv"*, *"excel"*,
+                (see `(Config.)set_default_data_node_configuration()^`)), *"pickle"*, *"csv"*, *"excel"*,
                 *"sql_table"*, *"sql"*, *"json"*, *"parquet"*, *"mongo_collection"*, *"in_memory"*, or
                 *"generic"*.
             scope (Optional[Scope^]): The scope of the data node configuration.<br/>
                 The default value is `Scope.SCENARIO` (or the one specified in
-                `(Config.)configure_default_data_node()^`).
+                `(Config.)set_default_data_node_configuration()^`).
             validity_period (Optional[timedelta]): The duration since the last edit date for which the data node can be
                 considered up-to-date. Once the validity period has passed, the data node is considered stale and
                 relevant tasks will run even if they are skippable (see the
@@ -813,27 +754,6 @@ class Config:
         skippable: Optional[bool] = False,
         **properties,
     ) -> "TaskConfig":
-        """Configure the default values for task configurations.
-
-        This function creates the *default task configuration* object,
-        where all task configuration objects will find their default
-        values when needed.
-
-        Parameters:
-            function (Callable): The python function called by Taipy to run the task.
-            input (Optional[Union[DataNodeConfig^, List[DataNodeConfig^]]]): The list of the
-                input data node configurations. This can be a unique data node
-                configuration if there is a single input data node, or None if there are none.
-            output (Optional[Union[DataNodeConfig^, List[DataNodeConfig^]]]): The list of the
-                output data node configurations. This can be a unique data node
-                configuration if there is a single output data node, or None if there are none.
-            skippable (bool): If True, indicates that the task can be skipped if no change has
-                been made on inputs.<br/>
-                The default value is False.
-            **properties (dict[str, any]): A keyworded variable length list of additional
-                arguments.
-        Returns:
-            The default task configuration.
         """
 
     @staticmethod
