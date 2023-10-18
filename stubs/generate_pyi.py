@@ -145,6 +145,8 @@ if __name__ == "__main__":
     job_filename = "taipy-core/src/taipy/core/config/job_config.py"
     scenario_filename = "taipy-core/src/taipy/core/config/scenario_config.py"
     task_filename = "taipy-core/src/taipy/core/config/task_config.py"
+    migration_filename = "taipy-core/src/taipy/core/config/migration_config.py"
+    core_filename = "taipy-core/src/taipy/core/config/core_section.py"
 
     entities_map, property_map = _generate_entity_and_property_maps(config_init)
     pyi = _build_header(header_file)
@@ -154,6 +156,8 @@ if __name__ == "__main__":
     pyi = _build_entity_config_pyi(pyi, dn_filename, entities_map["DataNodeConfig"])
     pyi = _build_entity_config_pyi(pyi, task_filename, entities_map["TaskConfig"])
     pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["JobConfig"])
+    pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["MigrationConfig"])
+    pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["CoreSection"])
 
     with open("src/taipy/config/config.pyi", "w") as f:
         f.writelines(pyi)

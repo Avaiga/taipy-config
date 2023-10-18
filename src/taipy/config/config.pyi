@@ -12,7 +12,7 @@
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from taipy.core.config import DataNodeConfig, JobConfig, ScenarioConfig, TaskConfig
+from taipy.core.config import DataNodeConfig, JobConfig, ScenarioConfig, TaskConfig, MigrationConfig, CoreSection
 
 from .checker.issue_collector import IssueCollector
 from .common._classproperty import _Classproperty
