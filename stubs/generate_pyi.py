@@ -156,8 +156,8 @@ if __name__ == "__main__":
     pyi = _build_entity_config_pyi(pyi, dn_filename, entities_map["DataNodeConfig"])
     pyi = _build_entity_config_pyi(pyi, task_filename, entities_map["TaskConfig"])
     pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["JobConfig"])
-    pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["MigrationConfig"])
-    pyi = _build_entity_config_pyi(pyi, job_filename, entities_map["CoreSection"])
+    pyi = _build_entity_config_pyi(pyi, migration_filename, entities_map["MigrationConfig"])
+    pyi = _build_entity_config_pyi(pyi, core_filename, entities_map["CoreSection"])
 
     with open("src/taipy/config/config.pyi", "w") as f:
         f.writelines(pyi)
