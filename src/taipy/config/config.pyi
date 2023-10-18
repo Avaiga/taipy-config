@@ -821,6 +821,25 @@ class Config:
         """
 
     @staticmethod
+    def add_migration_function(
+        target_version: str,
+        config: Union[Section, str],
+        migration_fct: Callable,
+        **properties,
+    ):
+        """Add a migration function for a Configuration to migrate entities to the target version.
+
+        Parameters:
+            target_version (str): The production version that entities are migrated to.
+            config (Union[Section, str]): The configuration or the `id` of the config that needs to migrate.
+            migration_fct (Callable): Migration function that takes an entity as input and returns a new entity
+                that is compatible with the target production version.
+            **properties (Dict[str, Any]): A keyworded variable length list of additional arguments.
+        Returns:
+            `MigrationConfig^`: The Migration configuration.
+        """
+
+    @staticmethod
     def configure_core(
         root_folder: Optional[str] = None,
         storage_folder: Optional[str] = None,
