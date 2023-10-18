@@ -84,6 +84,8 @@ def _build_entity_config_pyi(base_pyi, filename, entity_map):
                 functions[f.name] = f.lineno
             elif "_set_default" in f.name and not f.name.startswith("__"):
                 functions[f.name] = f.lineno
+            elif "_add" in f.name and not f.name.startswith("__"):
+                functions[f.name] = f.lineno
 
     for k, v in functions.items():
         begin_line, end_line = _get_function_delimiters(v - 1, lines)
