@@ -1,4 +1,4 @@
-# Copyright 2023 Avaiga Private Limited
+# Copyright 2021-2024 Avaiga Private Limited
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
 # the License. You may obtain a copy of the License at
@@ -637,6 +637,7 @@ class Config:
         db_engine: str,
         read_query: str,
         write_query_builder: Callable,
+        append_query_builder: Optional[Callable] = None,
         db_username: Optional[str] = None,
         db_password: Optional[str] = None,
         db_host: Optional[str] = None,
@@ -659,7 +660,9 @@ class Config:
                 or *"postgresql"*.
             read_query (str): The SQL query string used to read the data from the database.
             write_query_builder (Callable): A callback function that takes the data as an input parameter
-                and returns a list of SQL queries.
+                and returns a list of SQL queries to be executed when writing data to the data node.
+            append_query_builder (Optional[Callable]): A callback function that takes the data as an input parameter
+                and returns a list of SQL queries to be executed when appending data to the data node.
             db_username (Optional[str]): The database username. Required by the *"mssql"*, *"mysql"*, and
                 *"postgresql"* engines.
             db_password (Optional[str]): The database password. Required by the *"mssql"*, *"mysql"*, and
