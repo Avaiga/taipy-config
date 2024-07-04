@@ -26,7 +26,7 @@ with open(f"src{os.sep}taipy{os.sep}config{os.sep}version.json") as version_file
     if vext := version.get("ext"):
         version_string = f"{version_string}.{vext}"
 
-requirements = ["toml>=0.10,<0.11", "deepdiff>=6.2,<6.3"]
+requirements = ["toml>=0.10,<0.11", "deepdiff>=6.7,<7.0", "numpy < 2.0"]
 
 test_requirements = ["pytest>=3.8"]
 

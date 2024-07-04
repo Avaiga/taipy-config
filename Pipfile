@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 toml = "==0.10"
-deepdiff = "==6.2.2"
+deepdiff = "==6.7.1"
+numpy = "<2.0.0"
 
 [dev-packages]
 black = "*"
