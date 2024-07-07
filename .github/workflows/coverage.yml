@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ develop, dev/*, release/* ]
 
+permissions:
+  checks: write
+
 jobs:
   backend-coverage:
     timeout-minutes: 20
