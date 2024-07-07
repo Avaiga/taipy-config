@@ -27,7 +27,7 @@ jobs:
           tox -e coverage
 
       - name: Code coverage
-        uses: orgoro/coverage@v2
+        uses: orgoro/coverage@v3.1
         with:
           coverageFile: coverage.xml
           token: ${{ secrets.GITHUB_TOKEN }}
