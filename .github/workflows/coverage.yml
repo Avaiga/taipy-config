@@ -5,7 +5,7 @@ on:
     branches: [ develop, dev/*, release/* ]
 
 permissions:
-  checks: write
+  #checks: write
   pull-requests: write
 
 jobs:
