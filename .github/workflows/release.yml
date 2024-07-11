@@ -62,6 +62,8 @@ jobs:
           python setup.py build_py && python -m build
           ls -l dist
           pip install dist/*.tar.gz
+          for file in ./dist/*; do mv "$file" "${file//_/-}"; done
+          ls -l dist
 
       - name: Extract commit hash
         shell: bash
