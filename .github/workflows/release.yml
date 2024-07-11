@@ -60,6 +60,7 @@ jobs:
       - name: Build and test the package
         run: |
           python setup.py build_py && python -m build
+          ls -l dist
           pip install dist/*.tar.gz
 
       - name: Extract commit hash
