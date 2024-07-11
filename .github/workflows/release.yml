@@ -63,6 +63,10 @@ jobs:
     name: Release taipy-config Package
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      actions: write
+
     steps:
       - uses: actions/checkout@v2
 
